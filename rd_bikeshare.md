@@ -1,6 +1,12 @@
-# Regression Discontinuity Analysis of Bikeshare in Montreal
-Daniel Fuller (dfuller@mun.ca)  
-January, 2017  
+---
+title: 'Regression Discontinuity Analysis of Bikeshare in Montreal'
+author: "Daniel Fuller (dfuller@mun.ca)"
+date: "January, 2017"
+output:
+  html_document:
+    keep_md: yes
+  pdf_document: default
+---
 
 
 
@@ -96,7 +102,36 @@ Subset the data so only those with +- 2Km from the cut off are included.
 
 ```r
 rdt0 <- subset(rdt0, assignment >= -2)
+```
 
+#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
+
+
+```r
+fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
+    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
+    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
+    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
+    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
+    xlab("Distance") + ylab("Minutes of cycling per week")
+print(fuzzy_plot1)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+
+```r
+table(rdt0$dAssign, rdt0$bixiNbhd)
+```
+
+```
+   
+     No Yes
+  0 191 216
+  1   2 443
+```
+
+
+```r
 histogramAssign <- ggplot(rdt0, aes(assignment)) + geom_histogram(aes(y = ..density..), 
     binwidth = 0.05, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
@@ -107,7 +142,7 @@ histogramAssign <- ggplot(rdt0, aes(assignment)) + geom_histogram(aes(y = ..dens
 plot(histogramAssign)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
 ```r
 ggsave("histogramAssign.pdf", histogramAssign, dpi = 300)
@@ -120,7 +155,37 @@ ggsave("histogramAssign.pdf", histogramAssign, dpi = 300)
 
 ```r
 rdt1 <- subset(rdt1, assignment >= -2)
+```
 
+#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
+
+
+```r
+fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
+    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
+    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
+    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
+    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
+    xlab("Distance") + ylab("Minutes of cycling per week")
+print(fuzzy_plot2)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
+
+```r
+table(rdt1$dAssign, rdt1$bixiNbhd)
+```
+
+```
+   
+     No Yes
+  0 430 193
+  1 270 601
+```
+
+
+
+```r
 histogramAssign1 <- ggplot(rdt1, aes(assignment)) + geom_histogram(aes(y = ..density..), 
     binwidth = 0.05, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
@@ -131,7 +196,7 @@ histogramAssign1 <- ggplot(rdt1, aes(assignment)) + geom_histogram(aes(y = ..den
 plot(histogramAssign1)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
 
 ```r
 ggsave("histogramAssign1.pdf", histogramAssign1, dpi = 300)
@@ -144,7 +209,36 @@ ggsave("histogramAssign1.pdf", histogramAssign1, dpi = 300)
 
 ```r
 rdt2 <- subset(rdt2, assignment >= -2)
+```
 
+#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
+
+
+```r
+fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
+    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
+    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
+    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
+    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
+    xlab("Distance") + ylab("Minutes of cycling per week")
+print(fuzzy_plot2)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
+
+```r
+table(rdt1$dAssign, rdt1$bixiNbhd)
+```
+
+```
+   
+     No Yes
+  0 430 193
+  1 270 601
+```
+
+
+```r
 histogramAssign2 <- ggplot(rdt2, aes(assignment)) + geom_histogram(aes(y = ..density..), 
     binwidth = 0.05, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
@@ -155,7 +249,7 @@ histogramAssign2 <- ggplot(rdt2, aes(assignment)) + geom_histogram(aes(y = ..den
 plot(histogramAssign2)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
 
 ```r
 ggsave("histogramAssign2.pdf", histogramAssign2, dpi = 300)
@@ -243,18 +337,18 @@ rdPlot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin, fill = factor(dAssig
 print(rdPlot1)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
 ```r
 ggsave("rdMain.jpg", rdPlot1, dpi = 300)
 ```
 
 ### 3B. Season 1
-![](rd_bikeshare_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
 
 ### 3C. Season 2
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
 
 \pagebreak  
 
@@ -267,13 +361,13 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-30-1.png)<!-- -->
 
 ### Season 1
-![](rd_bikeshare_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-31-1.png)<!-- -->
 
 ### Season 2
-![](rd_bikeshare_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-32-1.png)<!-- -->
 
 ## Descriptive Statistics for each survey period 
 
@@ -316,10 +410,18 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 
 ```
 # A tibble: 2 x 16
-  dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin total
-    <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>      <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl> <int>
-1       0 46.87  18.86    1.370     1.609 24.29  6.630     51.90      19.13  2.185   8.389 0.5284  0.4998        25.78          76.64   405
-2       1 45.25  17.76    1.544     1.711 23.40  6.326     76.03      17.96  1.810   4.654 0.5169  0.5003        38.06          84.76   443
+  dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens
+    <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>
+1    0     46.9   18.9     1.37      1.61  24.3   6.63      51.9
+2    1.00  45.3   17.8     1.54      1.71  23.4   6.33      76.0
+  sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin
+       <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl>
+1       19.1   2.19    8.39  0.528   0.500         25.8           76.6
+2       18.0   1.81    4.65  0.517   0.500         38.1           84.8
+  total
+  <int>
+1   405
+2   443
 ```
 
 #### Income
@@ -347,10 +449,18 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 
 ```
 # A tibble: 2 x 16
-  dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin total
-    <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>      <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl> <int>
-1       0 47.01  19.51    1.082     1.495 23.67  9.642     40.75      17.84  2.878   11.67 0.6318  0.4827        14.05          57.81   622
-2       1 43.69  17.42    1.459     1.679 23.69  7.775     72.68      15.36  2.901   11.38 0.6092  0.4882        20.39          61.37   870
+  dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens
+    <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>
+1    0     47.0   19.5     1.08      1.50  23.7   9.64      40.8
+2    1.00  43.7   17.4     1.46      1.68  23.7   7.78      72.7
+  sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin
+       <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl>
+1       17.8   2.88    11.7  0.632   0.483         14.0           57.8
+2       15.4   2.90    11.4  0.609   0.488         20.4           61.4
+  total
+  <int>
+1   622
+2   870
 ```
 
 #### Income
@@ -378,10 +488,18 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 
 ```
 # A tibble: 2 x 16
-  dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin total
-    <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>      <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl> <int>
-1       0 48.17  18.51    1.075     1.362 24.10  7.160     38.22      19.07  1.829   6.234 0.5976  0.4909        9.807          47.24   492
-2       1 45.87  18.85    1.281     1.436 23.72  7.091     65.69      19.36  2.458   9.496 0.5634  0.4962       17.440          61.71  1152
+  dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens
+    <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>
+1    0     48.2   18.5     1.08      1.36  24.1   7.16      38.2
+2    1.00  45.9   18.8     1.28      1.44  23.7   7.09      65.7
+  sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin
+       <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl>
+1       19.1   1.83    6.23  0.598   0.491         9.81           47.2
+2       19.4   2.46    9.50  0.563   0.496        17.4            61.7
+  total
+  <int>
+1   492
+2  1152
 ```
 
 #### Income
@@ -975,7 +1093,7 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0.1139, y.label = "Minutes 
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-62-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-68-1.png)<!-- -->
 
 \pagebreak  
 
@@ -1039,7 +1157,7 @@ rdplot(y = rdt1$veloTotMin, x = rdt1$assignment, c = 0.196, y.label = "Minutes o
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-65-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-71-1.png)<!-- -->
 
 \pagebreak  
 
@@ -1111,7 +1229,7 @@ rdplot(y = rdt2$veloTotMin, x = rdt2$assignment, c = 0.3841, y.label = "Minutes 
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-68-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
 
 \pagebreak  
 
@@ -1177,7 +1295,7 @@ rdplot(y = rdt0$popDens, x = rdt0$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-71-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-77-1.png)<!-- -->
 
 \pagebreak  
 
@@ -1241,7 +1359,7 @@ rdplot(y = rdt0$kids, x = rdt0$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-80-1.png)<!-- -->
 
 \pagebreak  
 
@@ -1307,7 +1425,7 @@ rdplot(y = rdt1$popDens, x = rdt1$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-77-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-83-1.png)<!-- -->
 
 \pagebreak  
 
@@ -1371,7 +1489,7 @@ rdplot(y = rdt1$kids, x = rdt1$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-80-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-86-1.png)<!-- -->
 
 \pagebreak 
 
@@ -1437,7 +1555,7 @@ rdplot(y = rdt2$popDens, x = rdt2$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-83-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-89-1.png)<!-- -->
 
 \pagebreak 
 
@@ -1501,7 +1619,7 @@ rdplot(y = rdt2$kids, x = rdt2$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-86-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-92-1.png)<!-- -->
 
 \pagebreak 
 
