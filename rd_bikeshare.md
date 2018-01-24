@@ -344,11 +344,43 @@ ggsave("rdMain.jpg", rdPlot1, dpi = 300)
 ```
 
 ### 3B. Season 1
+
+```r
+rdPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin, fill = factor(dAssign))) + 
+    geom_point(aes(colour = factor(dAssign)), alpha = 1/2) + geom_smooth(aes(fill = factor(dAssign)), 
+    method = "lm", se = FALSE, colour = "black") + geom_smooth(aes(fill = factor(dAssign)), 
+    linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
+    "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
+    panel.background = element_blank(), axis.title = element_text(size = 16), 
+    text = element_text(size = 14)) + xlab("Distance") + ylab("Minutes of cycling per week")
+print(rdPlot1t1)
+```
+
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
+
+```r
+ggsave("rdMaint1.jpg", rdPlot1t1, dpi = 300)
+```
 
 ### 3C. Season 2
 
+
+```r
+rdPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin, fill = factor(dAssign))) + 
+    geom_point(aes(colour = factor(dAssign)), alpha = 1/2) + geom_smooth(aes(fill = factor(dAssign)), 
+    method = "lm", se = FALSE, colour = "black") + geom_smooth(aes(fill = factor(dAssign)), 
+    linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
+    "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
+    panel.background = element_blank(), axis.title = element_text(size = 16), 
+    text = element_text(size = 14)) + xlab("Distance") + ylab("Minutes of cycling per week")
+print(rdPlot1t2)
+```
+
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
+
+```r
+ggsave("rdMaint2.jpg", rdPlot1t2, dpi = 300)
+```
 
 \pagebreak  
 
