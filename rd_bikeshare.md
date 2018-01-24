@@ -106,31 +106,6 @@ Subset the data so only those with +- 2Km from the cut off are included.
 rdt0 <- subset(rdt0, assignment >= -2)
 ```
 
-#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
-
-
-```r
-fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
-    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
-    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
-    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
-    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
-    xlab("Distance") + ylab("Minutes of cycling per week")
-plot(fuzzy_plot1)
-```
-
-![](rd_bikeshare_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
-
-```r
-table(rdt0$dAssign, rdt0$bixiNbhd)
-```
-
-```
-   
-     No Yes
-  0 191 216
-  1   2 443
-```
 
 
 ```r
@@ -144,7 +119,7 @@ histogramAssign <- ggplot(rdt0, aes(assignment)) + geom_histogram(aes(y = ..dens
 plot(histogramAssign)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 ```r
 ggsave("histogramAssign.pdf", histogramAssign, dpi = 300)
@@ -159,33 +134,6 @@ ggsave("histogramAssign.pdf", histogramAssign, dpi = 300)
 rdt1 <- subset(rdt1, assignment >= -2)
 ```
 
-#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
-
-
-```r
-fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
-    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
-    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
-    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
-    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
-    xlab("Distance") + ylab("Minutes of cycling per week")
-plot(fuzzy_plot2)
-```
-
-![](rd_bikeshare_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
-
-```r
-table(rdt1$dAssign, rdt1$bixiNbhd)
-```
-
-```
-   
-     No Yes
-  0 430 193
-  1 270 601
-```
-
-
 
 ```r
 histogramAssign1 <- ggplot(rdt1, aes(assignment)) + geom_histogram(aes(y = ..density..), 
@@ -198,7 +146,7 @@ histogramAssign1 <- ggplot(rdt1, aes(assignment)) + geom_histogram(aes(y = ..den
 plot(histogramAssign1)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-16-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
 
 ```r
 ggsave("histogramAssign1.pdf", histogramAssign1, dpi = 300)
@@ -213,32 +161,6 @@ ggsave("histogramAssign1.pdf", histogramAssign1, dpi = 300)
 rdt2 <- subset(rdt2, assignment >= -2)
 ```
 
-#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
-
-
-```r
-fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
-    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
-    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
-    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
-    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
-    xlab("Distance") + ylab("Minutes of cycling per week")
-plot(fuzzy_plot2)
-```
-
-![](rd_bikeshare_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
-
-```r
-table(rdt1$dAssign, rdt1$bixiNbhd)
-```
-
-```
-   
-     No Yes
-  0 430 193
-  1 270 601
-```
-
 
 ```r
 histogramAssign2 <- ggplot(rdt2, aes(assignment)) + geom_histogram(aes(y = ..density..), 
@@ -251,7 +173,7 @@ histogramAssign2 <- ggplot(rdt2, aes(assignment)) + geom_histogram(aes(y = ..den
 plot(histogramAssign2)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-20-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-17-1.png)<!-- -->
 
 ```r
 ggsave("histogramAssign2.pdf", histogramAssign2, dpi = 300)
@@ -289,36 +211,78 @@ ggsave("histogramAssign2.pdf", histogramAssign2, dpi = 300)
 
 ### 2A. Pre-implentation
 
+```r
+fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
+    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
+    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
+    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
+    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
+    xlab("Distance") + ylab("Minutes of cycling per week")
+plot(fuzzy_plot1)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
 
 ```r
-table(rdt0$treatment, rdt0$dAssign)
+table(rdt0$dAssign, rdt0$bixiNbhd)
 ```
 
 ```
    
-      0   1
-  0 323  16
-  1  84 424
+     No Yes
+  0 191 216
+  1   2 443
 ```
 
 ### 2B. Season 1
 
 
+```r
+fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
+    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
+    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
+    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
+    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
+    xlab("Distance") + ylab("Minutes of cycling per week")
+plot(fuzzy_plot2)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
+
+```r
+table(rdt1$dAssign, rdt1$bixiNbhd)
+```
+
 ```
    
-      0   1
-  0 381  78
-  1 240 792
+     No Yes
+  0 430 193
+  1 270 601
 ```
 
-### 2C. Season 2
+### 2B. Season 2
 
+```r
+fuzzy_plot3 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
+    shape = 1) + geom_point(aes(colour = factor(bixiNbhd)), shape = 1) + geom_vline(xintercept = 0) + 
+    scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
+    "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
+    axis.title = element_text(size = 16), text = element_text(size = 14)) + 
+    xlab("Distance") + ylab("Minutes of cycling per week")
+plot(fuzzy_plot3)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
+
+```r
+table(rdt2$dAssign, rdt2$bixiNbhd)
+```
 
 ```
    
-      0   1
-  0 337 161
-  1 156 993
+     No Yes
+  0 343 150
+  1 349 805
 ```
 
 # 2.	Graphed the assignment by outcome variable scatterplot with linear and empirically estimated regression functions (Figure 3)
@@ -339,7 +303,7 @@ rdPlot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin, fill = factor(dAssig
 print(rdPlot1)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
 
 ```r
 ggsave("rdMain.jpg", rdPlot1, dpi = 300)
@@ -358,7 +322,7 @@ rdPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin, fill = factor(dAss
 print(rdPlot1t1)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
 
 ```r
 ggsave("rdMaint1.jpg", rdPlot1t1, dpi = 300)
@@ -378,7 +342,7 @@ rdPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin, fill = factor(dAss
 print(rdPlot1t2)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
 
 ```r
 ggsave("rdMaint2.jpg", rdPlot1t2, dpi = 300)
@@ -393,13 +357,13 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-30-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
 ### Season 1
-![](rd_bikeshare_files/figure-html/unnamed-chunk-31-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
 
 ### Season 2
-![](rd_bikeshare_files/figure-html/unnamed-chunk-32-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
 
 ## Descriptive Statistics for each survey period 
 
@@ -1075,7 +1039,7 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0.1139, y.label = "Minutes 
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-68-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-65-1.png)<!-- -->
 
 #### Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
@@ -1137,7 +1101,7 @@ rdplot(y = rdt1$veloTotMin, x = rdt1$assignment, c = 0.196, y.label = "Minutes o
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-71-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-68-1.png)<!-- -->
 
   
 
@@ -1209,7 +1173,7 @@ rdplot(y = rdt2$veloTotMin, x = rdt2$assignment, c = 0.3841, y.label = "Minutes 
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-71-1.png)<!-- -->
 
   
 
@@ -1275,7 +1239,7 @@ rdplot(y = rdt0$popDens, x = rdt0$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-77-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
 
   
 
@@ -1339,7 +1303,7 @@ rdplot(y = rdt0$kids, x = rdt0$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-80-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-77-1.png)<!-- -->
 
   
 
@@ -1405,7 +1369,7 @@ rdplot(y = rdt1$popDens, x = rdt1$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-83-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-80-1.png)<!-- -->
 
   
 
@@ -1469,7 +1433,7 @@ rdplot(y = rdt1$kids, x = rdt1$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-86-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-83-1.png)<!-- -->
 
  
 
@@ -1535,7 +1499,7 @@ rdplot(y = rdt2$popDens, x = rdt2$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-89-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-86-1.png)<!-- -->
 
  
 
@@ -1595,7 +1559,7 @@ rdplot(y = rdt2$kids, x = rdt2$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-92-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-89-1.png)<!-- -->
 
  
 
