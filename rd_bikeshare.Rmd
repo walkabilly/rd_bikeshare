@@ -1,0 +1,978 @@
+---
+title: 'Regression Discontinuity Analysis of Bikeshare in Montreal'
+author: "Daniel Fuller (dfuller@mun.ca)"
+date: "January, 2017"
+output:
+  html_document:
+    keep_md: yes
+  pdf_document: default
+---
+
+```{r, echo=FALSE, warning=FALSE}
+options(scipen = 2, digits=4)
+library(knitr)
+opts_chunk$set(warning = FALSE, message = FALSE, error = FALSE, tidy = TRUE, comment=NA)
+```
+
+```{r, echo=FALSE, warning=FALSE}
+library(dplyr)
+library(foreign)
+library(ggplot2)
+library(car)
+library(rdrobust)
+library(RCurl)
+library(doBy)
+library(psych)
+library(extrafont)
+library(dplyr)
+rd1 <- read.dta("bixi_rd_2012_08_28.dta")
+bixinbhd <- read.dta("SR_2006_il_montreal.dta")
+rd <- merge(rd1, bixinbhd, by = "CT_ID", all = TRUE)
+```
+
+```{r, echo=FALSE, warning=FALSE}
+rdt0 <- subset(rd, pre_post_n_13_11 == 0, select = c(id, pre_post_n_13_11, bixarea_09, dist_2009, av_time1,velototmin_n_13_11, velo_day_n_13_11, bixinbhd, age_n_13_11, d_sexef_n_13_11, alcool_nbr_n_13_11, dens_dest, road_kernel, count_stre_n_19_11, bmi_n_13_11, apvigmin_n_13_11, revenu_n_4_0, sante1an_n_4_0, sse_n_4_0, kids_n_4_0, pop_dens, b_nbhd_2009.x))
+rdt1 <- subset(rd, pre_post_n_13_11 == 1, select = c(id, pre_post_n_13_11, bixarea_10, dist_2010, av_time2,velototmin_n_13_11, velo_day_n_13_11, bixinbhd, age_n_13_11, d_sexef_n_13_11, alcool_nbr_n_13_11, dens_dest, road_kernel, count_stre_n_19_11, bmi_n_13_11, apvigmin_n_13_11, revenu_n_4_0, sante1an_n_4_0, sse_n_4_0, kids_n_4_0, pop_dens, b_nbhd_2010.x))
+rdt2 <- subset(rd, pre_post_n_13_11 == 2, select = c(id, pre_post_n_13_11,bixarea_11, dist_2011, av_time3,velototmin_n_13_11, velo_day_n_13_11, bixinbhd, age_n_13_11, d_sexef_n_13_11, alcool_nbr_n_13_11, dens_dest, road_kernel, count_stre_n_19_11, bmi_n_13_11, apvigmin_n_13_11, revenu_n_4_0, sante1an_n_4_0, sse_n_4_0, kids_n_4_0, pop_dens, b_nbhd_2011.x))
+
+names(rdt0) <- c("id", "prePost", "bixArea09", "dist09", "av_time1", "veloTotMin", "veloDay", "bixiNbhd", "age", "sexF", "alcool", "denstDest", "roadKern", "countStreet", "bmi", "vigMinPA", "income", "srHealth", "srSES", "kids", "popDens", "treatment")
+names(rdt1) <- c("id", "prePost", "bixArea10", "dist10",  "av_time2", "veloTotMin", "veloDay", "bixiNbhd", "age", "sexF", "alcool", "denstDest", "roadKern", "countStreet", "bmi", "vigMinPA", "income", "srHealth", "srSES", "kids", "popDens", "treatment")
+names(rdt2) <- c("id", "prePost", "bixArea11", "dist11", "av_time3", "veloTotMin", "veloDay", "bixiNbhd", "age", "sexF", "alcool", "denstDest", "roadKern", "countStreet", "bmi", "vigMinPA", "income", "srHealth", "srSES", "kids", "popDens", "treatment")
+
+rdt0$bixiNbhd <- car::recode(rdt0$bixiNbhd, 
+              "0 ='Yes';
+              1 = 'No'", as.factor.result=TRUE)
+
+rdt1$bixiNbhd <- car::recode(rdt1$bixiNbhd, 
+              "0 ='Yes';
+              1 = 'No'", as.factor.result=TRUE)
+
+rdt2$bixiNbhd <- car::recode(rdt2$bixiNbhd, 
+              "0 ='Yes';
+              1 = 'No'", as.factor.result=TRUE)
+```
+
+Variables were calculated using ArcGIS and recoded in R. 
+
+# Outcome Variable - Minutes of Cycling in the past Week
+
+Recoded outliers >500 minutes per week to 500
+
+```{r, echo=FALSE, warning=FALSE}
+rdt0$veloTotMin <- ifelse(rdt0$veloTotMin>500, 500, rdt0$veloTotMin)
+rdt0$veloMiss <- is.na(rdt0$veloTotMin)
+
+rdt1$veloTotMin <- ifelse(rdt1$veloTotMin>500, 500, rdt1$veloTotMin)
+rdt1$veloMiss <- is.na(rdt1$veloTotMin)
+
+rdt2$veloTotMin <- ifelse(rdt2$veloTotMin>500, 500, rdt2$veloTotMin)
+rdt2$veloMiss <- is.na(rdt2$veloTotMin)
+```
+
+### Pre-Implementation
+```{r, echo=TRUE, warning=FALSE}
+psych::describe(rdt0$veloTotMin, skew = FALSE)
+# Pre-implementation histogram of minutes of cycling in the past week
+histogramVelo <- ggplot(rdt0, aes(veloTotMin)) +
+  geom_histogram()
+plot(histogramVelo)
+```
+
+### Season 1
+```{r, echo=TRUE, warning=FALSE}
+psych::describe(rdt1$veloTotMin, skew = FALSE)
+# Season 1 histogram of minutes of cycling in the past week
+histogramVelot1 <- ggplot(rdt1, aes(veloTotMin)) +
+  geom_histogram()
+plot(histogramVelot1)
+```
+
+### Season 2
+```{r, echo=TRUE, warning=FALSE}
+library(ggplot2)
+
+psych::describe(rdt2$veloTotMin, skew = FALSE)
+# Season 2 histogram of minutes of cycling in the past week
+histogramVelot2 <- ggplot(rdt2, aes(veloTotMin)) +
+  geom_histogram()
+plot(histogramVelot2)
+```
+
+# Assignment variable (Distance to the disconuity of bikeshare stations)
+
+Checking the assignment variable and converting so negative values are outside of the bikeshare implementation area and positive values are inside the bikeshare implementation area. 
+
+```{r, warning=FALSE, include=FALSE}
+### Convert Assignment 
+psych::describe(rdt0$dist09)
+table(rdt0$bixArea09)
+rdt0$assignment1 <- rdt0$dist09*100
+
+rdt0$assignment <- ifelse(rdt0$bixArea09==1, rdt0$assignment1, (rdt0$assignment1*-1))
+rdt0$dAssign <- ifelse(rdt0$assignment>=0, 1, 0)
+
+table(rdt0$dAssign)
+
+psych::describe(rdt0$assignment)
+rdt0$assignMiss <- is.na(rdt0$assignment)
+```
+
+## Distribution of the assignment variable
+
+### Pre-Implementation 
+
+```{r, echo=TRUE, warning=FALSE}
+histogramAssign <- ggplot(rdt0, aes(assignment)) +
+  geom_histogram(binwidth = 0.5)
+plot(histogramAssign)
+```
+
+Subset the data so only those with +- 2Km from the cut off are included.
+
+```{r, echo=TRUE, warning=FALSE}
+rdt0 <- subset(rdt0, assignment>=-2)
+```
+
+#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
+
+```{r}
+fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "gray90")) +  
+            scale_fill_manual(values = c("black", "gray90")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance") +
+            ylab("Minutes of cycling per week")
+plot(fuzzy_plot1)
+
+table(rdt0$dAssign, rdt0$bixiNbhd)
+```
+
+```{r}
+histogramAssign <- ggplot(rdt0, aes(assignment)) +
+  geom_histogram(aes(y = ..density..), binwidth = 0.05, colour="black", fill="white") + 
+  geom_density(alpha=.6, fill="grey") + 
+  geom_vline(xintercept = 0) + 
+  expand_limits(y = 0) + 
+        scale_colour_manual(values = c("black", "grey")) +  
+        scale_fill_manual(values = c("black", "grey")) +  
+  theme(axis.line = element_line(colour = "black"),
+        panel.background = element_blank(),
+        axis.title=element_text(size=16),
+        text=element_text(size=14)) + 
+        xlab("Distance for Bikeshare Station") +
+        ylab("Density")
+plot(histogramAssign)
+
+ggsave("histogramAssign.pdf", histogramAssign, dpi = 300)
+```
+
+### Season 1 
+
+```{r, include=FALSE, warning=FALSE}
+### Convert Assignment 
+rdt1$assignment1 <- rdt1$dist10*100
+rdt1$assignment <- ifelse(rdt1$bixArea10==1, rdt1$assignment1, (rdt1$assignment1*-1))
+rdt1$dAssign<- ifelse(rdt1$assignment>=0, 1, 0)
+
+psych::describe(rdt1$assignment)
+rdt1$assignMiss <- is.na(rdt1$assignment)
+```
+
+```{r, echo=TRUE, warning=FALSE}
+rdt1 <- subset(rdt1, assignment>=-2)
+```
+
+#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
+
+```{r}
+fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "gray90")) +  
+            scale_fill_manual(values = c("black", "gray90")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance") +
+            ylab("Minutes of cycling per week")
+plot(fuzzy_plot2)
+
+table(rdt1$dAssign, rdt1$bixiNbhd)
+```
+
+
+```{r}
+histogramAssign1 <- ggplot(rdt1, aes(assignment)) +
+  geom_histogram(aes(y = ..density..), binwidth = 0.05, colour="black", fill="white") + 
+  geom_density(alpha=.6, fill="grey") + 
+  geom_vline(xintercept = 0) + 
+  expand_limits(y = 0) + 
+        scale_colour_manual(values = c("black", "grey")) +  
+        scale_fill_manual(values = c("black", "grey")) +  
+  theme(axis.line = element_line(colour = "black"),
+        panel.background = element_blank(),
+        axis.title=element_text(size=16),
+        text=element_text(size=14)) + 
+        xlab("Distance for Bikeshare Station") +
+        ylab("Density")
+plot(histogramAssign1)
+
+ggsave("histogramAssign1.pdf", histogramAssign1, dpi = 300)
+```
+
+### Season 2
+
+```{r, include=FALSE, warning=FALSE}
+### Convert Assignment 
+rdt2$assignment1 <- rdt2$dist11*100
+rdt2$assignment <- ifelse(rdt2$bixArea11==1, rdt2$assignment1, (rdt2$assignment1*-1))
+rdt2$dAssign<- ifelse(rdt2$assignment>=0, 1, 0)
+psych::describe(rdt2$assignment)
+rdt2$assignMiss <- is.na(rdt2$assignment)
+```
+
+```{r, echo=TRUE, warning=FALSE}
+rdt2 <- subset(rdt2, assignment>=-2)
+```
+
+#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
+
+```{r}
+fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "gray90")) +  
+            scale_fill_manual(values = c("black", "gray90")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance") +
+            ylab("Minutes of cycling per week")
+plot(fuzzy_plot2)
+
+table(rdt1$dAssign, rdt1$bixiNbhd)
+```
+
+```{r}
+histogramAssign2 <- ggplot(rdt2, aes(assignment)) +
+  geom_histogram(aes(y = ..density..), binwidth = 0.05, colour="black", fill="white") + 
+  geom_density(alpha=.6, fill="grey") + 
+  geom_vline(xintercept = 0) + 
+  expand_limits(y = 0) + 
+        scale_colour_manual(values = c("black", "grey")) +  
+        scale_fill_manual(values = c("black", "grey")) +  
+  theme(axis.line = element_line(colour = "black"),
+        panel.background = element_blank(),
+        axis.title=element_text(size=16),
+        text=element_text(size=14)) + 
+        xlab("Distance for Bikeshare Station") +
+        ylab("Density")
+plot(histogramAssign2)
+
+ggsave("histogramAssign2.pdf", histogramAssign2, dpi = 300)
+```
+
+## Treatment variable by outcome
+
+### Pre-implementation
+```{r, echo=FALSE, warning=FALSE}
+sumFun <- function(x, ...){
+  c(m=mean(x, ...), Stand_Dev=sd(x, ...))}
+
+veloDesc <- summaryBy(veloTotMin ~ bixArea09, data = rdt0, FUN = sumFun, 
+                     na.rm=TRUE)
+head(veloDesc)
+```
+
+### Season 1
+```{r, echo=FALSE, warning=FALSE}
+veloDesct1 <- summaryBy(veloTotMin ~ bixArea10, data = rdt1, FUN = sumFun, 
+                     na.rm=TRUE)
+print(head(veloDesct1))
+```
+
+### Season 2
+```{r, echo=FALSE, warning=FALSE}
+veloDesct1 <- summaryBy(veloTotMin ~ bixArea11, data = rdt2, FUN = sumFun, 
+                     na.rm=TRUE)
+print(head(veloDesct1))
+```
+
+# 1.	Graphed the relationship between the assignment and treatment variable (Figure 2)
+
+## Figure 2 - Relationship between the assignment (distance) and treatment (living in a bikeshare neighbourhood) variables 
+
+### 2A. Pre-implentation
+
+```{r, echo=TRUE, warning=FALSE}
+table(rdt0$treatment, rdt0$dAssign)
+```
+
+### 2B. Season 1
+
+```{r, echo=FALSE, warning=FALSE}
+table(rdt1$treatment, rdt1$dAssign)
+```
+
+### 2C. Season 2
+
+```{r, echo=FALSE, warning=FALSE}
+table(rdt2$treatment, rdt2$dAssign)
+```
+
+# 2.	Graphed the assignment by outcome variable scatterplot with linear and empirically estimated regression functions (Figure 3)
+
+## Figure 3. Assignment by outcome variable scatterplot with linear and empirically estimated regression functions
+
+### 3A. Pre-implementation
+
+```{r}
+rdPlot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin, fill=factor(dAssign))) + 
+            geom_point(aes(colour=factor(dAssign)), alpha = 1/2) + 
+            geom_smooth(aes(fill=factor(dAssign)), method = "lm", se=FALSE, colour="black") + 
+            geom_smooth(aes(fill=factor(dAssign)), linetype="solid", colour="#FFFFFF") + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "#333333")) +  
+            scale_fill_manual(values = c("black", "#333333")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance") +
+            ylab("Minutes of cycling per week")
+print(rdPlot1)
+
+ggsave("rdMain.jpg", rdPlot1, dpi = 300)
+```
+
+### 3B. Season 1
+```{r}
+rdPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin, fill=factor(dAssign))) + 
+            geom_point(aes(colour=factor(dAssign)), alpha = 1/2) + 
+            geom_smooth(aes(fill=factor(dAssign)), method = "lm", se=FALSE, colour="black") + 
+            geom_smooth(aes(fill=factor(dAssign)), linetype="solid", colour="#FFFFFF") + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "#333333")) +  
+            scale_fill_manual(values = c("black", "#333333")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance") +
+            ylab("Minutes of cycling per week")
+print(rdPlot1t1)
+
+ggsave("rdMaint1.jpg", rdPlot1t1, dpi = 300)
+```
+
+### 3C. Season 2
+
+```{r}
+rdPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin, fill=factor(dAssign))) + 
+            geom_point(aes(colour=factor(dAssign)), alpha = 1/2) + 
+            geom_smooth(aes(fill=factor(dAssign)), method = "lm", se=FALSE, colour="black") + 
+            geom_smooth(aes(fill=factor(dAssign)), linetype="solid", colour="#FFFFFF") + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "#333333")) +  
+            scale_fill_manual(values = c("black", "#333333")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance") +
+            ylab("Minutes of cycling per week")
+print(rdPlot1t2)
+
+ggsave("rdMaint2.jpg", rdPlot1t2, dpi = 300)
+```
+
+## Figure 3. Default parameters based on [rdrobust package](https://journal.r-project.org/archive/2015-1/cattaneo-calonico-titiunik.pdf)
+
+### Pre-implementation
+```{r, echo=TRUE, warning=FALSE}
+rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c=0, y.label = "Minutes of cycling per week", x.label = "Distance")
+```
+
+### Season 1
+```{r, echo=FALSE, warning=FALSE}
+rdplot(y = rdt1$veloTotMin, x = rdt1$assignment, c=0, y.label = "Minutes of cycling per week", x.label = "Distance")
+```
+
+### Season 2
+```{r, echo=FALSE, warning=FALSE}
+rdplot(y = rdt2$veloTotMin, x = rdt2$assignment, c=0, y.label = "Minutes of cycling per week", x.label = "Distance")
+```
+
+## Descriptive Statistics for each survey period 
+```{r, include=FALSE, warning=FALSE}
+### Pre-Implementation
+lmt0 <- lm(veloTotMin ~ assignment, data=rdt0, na.action = na.exclude)
+rdt0$predRDt0 <- fitted(lmt0)
+rdt0$predRDt0 <- is.na(rdt0$predRDt0)
+rdt0 <- filter(rdt0, predRDt0==FALSE)
+
+### Season 1
+lmt1 <- lm(veloTotMin ~ assignment, data=rdt1, na.action = na.exclude)
+rdt1$predRDt1 <- fitted(lmt1)
+rdt1$predRDt1 <- is.na(rdt1$predRDt1)
+rdt1 <- filter(rdt1, predRDt1==FALSE)
+
+### Season 2
+lm <- lm(veloTotMin ~ assignment, data=rdt2, na.action = na.exclude)
+rdt2$predRDt2 <- fitted(lm)
+rdt2$predRDt2 <- is.na(rdt2$predRDt2)
+rdt2 <- filter(rdt2, predRDt2==FALSE)
+```
+
+### Pre-Implementation
+```{r, echo=FALSE, warning=FALSE}
+rdt0 %>%
+    summarise(m.age = mean(age, na.rm=TRUE),
+              sd.age = sd(age, na.rm=TRUE),
+              m.alcool = mean(alcool, na.rm=TRUE),
+              sd.alcool = sd(alcool, na.rm=TRUE),
+              m.bmi = mean(bmi, na.rm=TRUE),
+              sd.bmi = sd(bmi, na.rm=TRUE),
+              m.popDens = mean(popDens, na.rm=TRUE),
+              sd.popDens = sd(popDens, na.rm=TRUE),
+              m.kids = mean(kids, na.rm=TRUE),
+              sd.kids = sd(kids, na.rm=TRUE),
+              sexFPct = mean(sexF, na.rm=TRUE),
+              m.veloTotMin = mean(veloTotMin, na.rm=TRUE),
+              sd.pveloTotMin = sd(veloTotMin, na.rm=TRUE),
+              total = n())
+```
+
+### Season 1
+```{r, echo=FALSE, warning=FALSE}
+rdt1 %>%
+    summarise(m.age = mean(age, na.rm=TRUE),
+              sd.age = sd(age, na.rm=TRUE),
+              m.alcool = mean(alcool, na.rm=TRUE),
+              sd.alcool = sd(alcool, na.rm=TRUE),
+              m.bmi = mean(bmi, na.rm=TRUE),
+              sd.bmi = sd(bmi, na.rm=TRUE),
+              m.popDens = mean(popDens, na.rm=TRUE),
+              sd.popDens = sd(popDens, na.rm=TRUE),
+              m.kids = mean(kids, na.rm=TRUE),
+              sd.kids = sd(kids, na.rm=TRUE),
+              sexFPct = mean(sexF, na.rm=TRUE),
+              m.veloTotMin = mean(veloTotMin, na.rm=TRUE),
+              sd.pveloTotMin = sd(veloTotMin, na.rm=TRUE),
+              total = n())
+```
+
+### Season 2
+```{r, echo=FALSE, warning=FALSE}
+rdt2 %>%
+    summarise(m.age = mean(age, na.rm=TRUE),
+              sd.age = sd(age, na.rm=TRUE),
+              m.alcool = mean(alcool, na.rm=TRUE),
+              sd.alcool = sd(alcool, na.rm=TRUE),
+              m.bmi = mean(bmi, na.rm=TRUE),
+              sd.bmi = sd(bmi, na.rm=TRUE),
+              m.popDens = mean(popDens, na.rm=TRUE),
+              sd.popDens = sd(popDens, na.rm=TRUE),
+              m.kids = mean(kids, na.rm=TRUE),
+              sd.kids = sd(kids, na.rm=TRUE),
+              sexFPct = mean(sexF, na.rm=TRUE),
+              m.veloTotMin = mean(veloTotMin, na.rm=TRUE),
+              sd.pveloTotMin = sd(veloTotMin, na.rm=TRUE),
+              total = n())
+```
+
+# 3. Examined the averages of selected covariates on either side of the cut-off (Table 1)
+
+## Table 1. Averages of selected covariates on either side of the cut-off
+
+### Pre-Implementation
+
+```{r, echo=FALSE, warning=FALSE}
+table1 <- rdt0 %>%
+  group_by(dAssign) %>%
+    summarise(m.age = mean(age, na.rm=TRUE),
+              sd.age = sd(age, na.rm=TRUE),
+              m.alcool = mean(alcool, na.rm=TRUE),
+              sd.alcool = sd(alcool, na.rm=TRUE),
+              m.bmi = mean(bmi, na.rm=TRUE),
+              sd.bmi = sd(bmi, na.rm=TRUE),
+              m.popDens = mean(popDens, na.rm=TRUE),
+              sd.popDens = sd(popDens, na.rm=TRUE),
+              m.kids = mean(kids, na.rm=TRUE),
+              sd.kids = sd(kids, na.rm=TRUE),
+              m.sexF = mean(sexF, na.rm=TRUE),
+              sd.sexF = sd(sexF, na.rm=TRUE),
+              m.veloTotMin = mean(veloTotMin, na.rm=TRUE),
+              sd.pveloTotMin = sd(veloTotMin, na.rm=TRUE),
+              total = n())
+print(table1, width = Inf)
+write.csv(table1, "t0Descriptives.csv")
+```
+
+#### Income
+```{r, echo=FALSE, warning=FALSE}
+rdt0$rincome <- car::recode(rdt0$income, 
+              "1:2='1 - <20k';
+              3:4='2 - 20-49k';
+              5:6='3 - 50-99k';
+              7:9='4 - 100k+';
+              99=NA", as.factor.result=TRUE)
+t_inct0 <- table(rdt0$dAssign, rdt0$rincome)
+cbind(t_inct0, prop.table(t_inct0, 1))
+```
+
+#### Self-Rated Health
+```{r, echo=FALSE, warning=FALSE}
+rdt0$rSRHealth <- car::recode(rdt0$srHealth, 
+              "1:2='Excellent';
+              3:5='Bad/Good';
+              9=NA", as.factor.result=TRUE)
+t_SHRt0 <- table(rdt0$dAssign, rdt0$rSRHealth)
+cbind(t_SHRt0, prop.table(t_SHRt0, 1))
+```
+
+### Season 1
+```{r, echo=FALSE, warning=FALSE}
+table2 <- rdt1 %>%
+  group_by(dAssign) %>%
+    summarise(m.age = mean(age, na.rm=TRUE),
+              sd.age = sd(age, na.rm=TRUE),
+              m.alcool = mean(alcool, na.rm=TRUE),
+              sd.alcool = sd(alcool, na.rm=TRUE),
+              m.bmi = mean(bmi, na.rm=TRUE),
+              sd.bmi = sd(bmi, na.rm=TRUE),
+              m.popDens = mean(popDens, na.rm=TRUE),
+              sd.popDens = sd(popDens, na.rm=TRUE),
+              m.kids = mean(kids, na.rm=TRUE),
+              sd.kids = sd(kids, na.rm=TRUE),
+              m.sexF = mean(sexF, na.rm=TRUE),
+              sd.sexF = sd(sexF, na.rm=TRUE),
+              m.veloTotMin = mean(veloTotMin, na.rm=TRUE),
+              sd.pveloTotMin = sd(veloTotMin, na.rm=TRUE),
+              total = n())
+print(table2, width = Inf)
+write.csv(table2, "t1Descriptives.csv")
+```
+
+#### Income
+```{r, echo=FALSE, warning=FALSE}
+rdt1$rincome <- car::recode(rdt1$income, 
+              "1:2='1 - <20k';
+              3:4='2 - 20-49k';
+              5:6='3 - 50-99k';
+              7:9='4 - 100k+';
+              99=NA", as.factor.result=TRUE)
+t_inct1 <- table(rdt1$dAssign, rdt1$rincome)
+cbind(t_inct1, prop.table(t_inct1, 1))
+```
+
+#### Self-Rated Health
+```{r, echo=FALSE, warning=FALSE}
+rdt1$rSRHealth <- car::recode(rdt1$srHealth, 
+              "1:2='Excellent';
+              3:5='Bad/Good';
+              9=NA", as.factor.result=TRUE)
+t_SRHt1 <- table(rdt1$dAssign, rdt1$rSRHealth)
+cbind(t_SRHt1, prop.table(t_SRHt1, 1))
+```
+
+### Season 2
+```{r, echo=FALSE, warning=FALSE}
+table3 <- rdt2 %>%
+  group_by(dAssign) %>%
+    summarise(m.age = mean(age, na.rm=TRUE),
+              sd.age = sd(age, na.rm=TRUE),
+              m.alcool = mean(alcool, na.rm=TRUE),
+              sd.alcool = sd(alcool, na.rm=TRUE),
+              m.bmi = mean(bmi, na.rm=TRUE),
+              sd.bmi = sd(bmi, na.rm=TRUE),
+              m.popDens = mean(popDens, na.rm=TRUE),
+              sd.popDens = sd(popDens, na.rm=TRUE),
+              m.kids = mean(kids, na.rm=TRUE),
+              sd.kids = sd(kids, na.rm=TRUE),
+              m.sexF = mean(sexF, na.rm=TRUE),
+              sd.sexF = sd(sexF, na.rm=TRUE),
+              m.veloTotMin = mean(veloTotMin, na.rm=TRUE),
+              sd.pveloTotMin = sd(veloTotMin, na.rm=TRUE),
+              total = n())
+print(table3, width = Inf)
+write.csv(table3, "t2Descriptives.csv")
+```
+
+#### Income
+
+```{r, echo=FALSE, warning=FALSE}
+rdt2$rincome <- car::recode(rdt2$income, 
+              "1:2='1 - <20k';
+              3:4='2 - 20-49k';
+              5:6='3 - 50-99k';
+              7:9='4 - 100k+';
+              99=NA", as.factor.result=TRUE)
+t_inct2 <- table(rdt2$dAssign, rdt2$rincome)
+cbind(t_inct2, prop.table(t_inct2, 1))
+```
+
+#### Self-Rated Health
+
+```{r, echo=FALSE, warning=FALSE}
+rdt2$rSRHealth <- car::recode(rdt2$srHealth, 
+              "1:2='Excellent';
+              3:5='Bad/Good';
+              9=NA", as.factor.result=TRUE)
+t_SRHt2 <- table(rdt2$dAssign, rdt2$rSRHealth)
+cbind(t_SRHt2, prop.table(t_SRHt2, 1))
+```
+
+# 4. Examined whether the results were sensitive to regression specification and bandwidth selection (Table 2)
+
+## Table 2: Estimating the Regressions
+
+```{r, echo=FALSE, warning=FALSE}
+url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
+eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
+     envir=.GlobalEnv)
+```
+
+### Pre-Implementation
+
+#### Pre-Implementation - Linear regression with robust standard errors
+```{r, echo=TRUE, warning=FALSE}
+lmt0 <- lm(veloTotMin ~ dAssign + assignment, data=rdt0)
+cbind(coef = coef(lmt0, robust=TRUE), confint(lmt0, robust=TRUE))
+
+table(rdt0$dAssign)
+```
+
+#### Pre-Implementation - Robust RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt0$veloTotMin, rdt0$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+#### Pre-Implementation - Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt0$veloTotMin, rdt0$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+#### Pre-Implementation - Robust  RD regression with epanechnikov kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt0$veloTotMin, rdt0$assignment, c=0, kernel="epa", all=TRUE)
+```
+
+#### Pre-Implementation - Robust  RD regression with epanechnikov kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt0$veloTotMin, rdt0$assignment, c=0, bwselect="msetwo", kernel="epa", all=TRUE)
+```
+
+#### Pre-Implementation - Robust  RD regression with uniform kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt0$veloTotMin, rdt0$assignment, c=0, kernel="uni", all=TRUE)
+```
+
+#### Pre-Implementation - Robust  RD regression with uniform kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt0$veloTotMin, rdt0$assignment, c=0, bwselect="msetwo", kernel="uni", all=TRUE)
+```
+
+### Season 1
+
+#### Season 1 - Linear regression with robust standard errors
+```{r, echo=TRUE, warning=FALSE}
+lmt1 <- lm(veloTotMin ~ dAssign + assignment, data=rdt1)
+cbind(coef = coef(lmt1, robust=TRUE), confint(lmt1, robust=TRUE))
+
+table(rdt1$dAssign)
+```
+
+#### Season 1 - Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+#### Season 1 - Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+#### Season 1 - Robust  RD regression with epanechnikov kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0, kernel="epa", all=TRUE)
+```
+
+#### Season 1 - Robust  RD regression with epanechnikov kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0, bwselect="msetwo", kernel="epa", all=TRUE)
+```
+
+#### Season 1 - Robust  RD regression with uniform kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0, kernel="uni", all=TRUE)
+```
+
+#### Season 1 - Robust  RD regression with uniform kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0, bwselect="msetwo", kernel="uni", all=TRUE)
+```
+
+### Season 2
+
+#### Season 2 - Linear regression with robust standard errors
+```{r, echo=TRUE, warning=FALSE}
+lmt2 <- lm(veloTotMin ~ dAssign + assignment, data=rdt2)
+cbind(coef = coef(lmt2, robust=TRUE), confint(lmt2, robust=TRUE))
+
+table(rdt2$dAssign)
+```
+
+#### Season 2 - Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+#### Season 2 - Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+#### Season 2 - Robust  RD regression with epanechnikov kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0, kernel="epa", all=TRUE)
+```
+
+#### Season 2 - Robust  RD regression with epanechnikov kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0, bwselect="msetwo", kernel="epa", all=TRUE)
+```
+
+#### Season 2 - Robust  RD regression with uniform kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0, kernel="uni", all=TRUE)
+```
+
+#### Season 2 - Robust  RD regression with uniform kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0, bwselect="msetwo", kernel="uni", all=TRUE)
+```
+
+# 5. Examine whether the outcome is discontinuous at other values of the forcing variable 
+
+### Pre-Implementation
+
+```{r, echo=TRUE, warning=FALSE}
+### Median of assignment variable
+median(rdt0$assignment)
+
+rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0.1139, y.label = "Minutes of cycling per week", x.label = "Distance")
+```
+
+#### Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+
+```{r, echo=FALSE, warning=FALSE}
+rdrobust(rdt0$veloTotMin, rdt0$assignment, c = 0.1139, kernel = "tri", all = TRUE)
+```
+
+  
+
+#### Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=FALSE, warning=FALSE}
+rdrobust(rdt0$veloTotMin, rdt0$assignment, c = 0.1139, bwselect ="msetwo", kernel = "tri", all=TRUE)
+```
+
+  
+
+### Season 1
+
+```{r, echo=TRUE, warning=FALSE}
+### Median of assignment variable
+median(rdt1$assignment)
+
+rdplot(y = rdt1$veloTotMin, x = rdt1$assignment, c=0.196, y.label = "Minutes of cycling per week", x.label = "Distance")
+```
+
+  
+
+## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0.196, kernel= "tri", all=TRUE)
+```
+
+  
+
+## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0.196, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+  
+
+### Season 2
+
+```{r, echo=TRUE, warning=FALSE}
+### Median of assignment variable
+median(rdt2$assignment)
+
+rdplot(y = rdt2$veloTotMin, x = rdt2$assignment, c=0.3841, y.label = "Minutes of cycling per week", x.label = "Distance")
+```
+
+  
+
+## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0.3841, kernel= "tri", all=TRUE)
+```
+
+  
+
+## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+```{r, echo=TRUE, warning=FALSE}
+rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0.3841, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+  
+
+# 6.	Examined whether jumps existing for population density and number of kids in the home.
+
+### Pre-Implementation
+
+#### Pre-Implementation - Population Density
+```{r, echo=TRUE, warning=FALSE}
+rdplot(y = rdt0$popDens, x = rdt0$assignment, c=0, y.label = "Population Density", x.label = "Distance")
+```
+
+  
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+rdrobust(rdt0$popDens, rdt0$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+  
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+rdrobust(rdt0$popDens, rdt0$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+  
+
+#### Pre-Implementation - Number of Kids
+```{r, echo=TRUE, warning=FALSE}
+rdplot(y = rdt0$kids, x = rdt0$assignment, c=0, y.label = "Number of Kids in Home", x.label = "Distance")
+```
+
+  
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+rdrobust(rdt0$kids, rdt0$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+  
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+rdrobust(rdt0$kids, rdt0$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+  
+
+### Season 1
+
+#### Season 1 - Population Density
+```{r, echo=TRUE, warning=FALSE}
+rdplot(y = rdt1$popDens, x = rdt1$assignment, c=0, y.label = "Population Density", x.label = "Distance")
+```
+
+  
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+rdrobust(rdt1$popDens, rdt1$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+  
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+rdrobust(rdt1$popDens, rdt1$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+  
+
+#### Season 1 - Number of Kids
+```{r, echo=TRUE, warning=FALSE}
+rdplot(y = rdt1$kids, x = rdt1$assignment, c=0, y.label = "Number of Kids in Home", x.label = "Distance")
+```
+
+ 
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+rdrobust(rdt1$kids, rdt1$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+ 
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+rdrobust(rdt1$kids, rdt1$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+ 
+
+### Season 2
+
+#### Season 2 - Population Density
+```{r, echo=TRUE, warning=FALSE}
+rdplot(y = rdt2$popDens, x = rdt2$assignment, c=0, y.label = "Population Density", x.label = "Distance")
+```
+
+ 
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+rdrobust(rdt2$popDens, rdt2$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+rdrobust(rdt2$popDens, rdt2$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+#### Season 2 - Number of Kids
+```{r, echo=TRUE, warning=FALSE}
+rdplot(y = rdt2$kids, x = rdt2$assignment, c=0, y.label = "Number of Kids in Home", x.label = "Distance")
+```
+
+ 
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
+rdrobust(rdt2$kids, rdt2$assignment, c=0, kernel= "tri", all=TRUE)
+```
+
+ 
+
+```{r, echo=TRUE, warning=FALSE}
+## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
+rdrobust(rdt2$kids, rdt2$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
+```
+
+# The end
+
+
+
+
+
+
+
+
