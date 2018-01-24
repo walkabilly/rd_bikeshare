@@ -63,6 +63,8 @@ plot(histogramVelot1)
 ### Season 2
 
 ```r
+library(ggplot2)
+
 psych::describe(rdt2$veloTotMin, skew = FALSE)
 ```
 
@@ -382,8 +384,6 @@ print(rdPlot1t2)
 ggsave("rdMaint2.jpg", rdPlot1t2, dpi = 300)
 ```
 
-\pagebreak  
-
 ## Figure 3. Default parameters based on [rdrobust package](https://journal.r-project.org/archive/2015-1/cattaneo-calonico-titiunik.pdf)
 
 ### Pre-implementation
@@ -431,8 +431,6 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 1   8.653  0.5736        15.16          57.85  1644
 ```
 
-\pagebreak  
-
 # 3. Examined the averages of selected covariates on either side of the cut-off (Table 1)
 
 ## Table 1. Averages of selected covariates on either side of the cut-off
@@ -475,8 +473,6 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 1      354        88   0.8009    0.1991
 ```
 
-\pagebreak  
-
 ### Season 1
 
 ```
@@ -513,8 +509,6 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 0      488       133   0.7858    0.2142
 1      688       181   0.7917    0.2083
 ```
-
-\pagebreak  
 
 ### Season 2
 
@@ -555,8 +549,6 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 1      908       242   0.7896    0.2104
 ```
 
-\pagebreak  
-
 # 4. Examined whether the results were sensitive to regression specification and bandwidth selection (Table 2)
 
 ## Table 2: Estimating the Regressions
@@ -589,8 +581,6 @@ table(rdt0$dAssign)
 405 443 
 ```
 
-\pagebreak
-
 #### Pre-Implementation - Robust RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -613,8 +603,6 @@ BW est. (h)                  0.318       0.318
 BW bias (b)                  0.681       0.681
 rho (h/b)                    0.467       0.467
 ```
-
-\pagebreak
 
 #### Pre-Implementation - Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -640,8 +628,6 @@ BW bias (b)                  1.071       0.627
 rho (h/b)                    0.469       0.512
 ```
 
-\pagebreak
-
 #### Pre-Implementation - Robust  RD regression with epanechnikov kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -664,8 +650,6 @@ BW est. (h)                  0.295       0.295
 BW bias (b)                  0.649       0.649
 rho (h/b)                    0.454       0.454
 ```
-
-\pagebreak
 
 #### Pre-Implementation - Robust  RD regression with epanechnikov kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -691,8 +675,6 @@ BW bias (b)                  0.933       0.604
 rho (h/b)                    0.447       0.501
 ```
 
-\pagebreak
-
 #### Pre-Implementation - Robust  RD regression with uniform kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -715,8 +697,6 @@ BW est. (h)                  0.213       0.213
 BW bias (b)                  0.472       0.472
 rho (h/b)                    0.451       0.451
 ```
-
-\pagebreak  
 
 #### Pre-Implementation - Robust  RD regression with uniform kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -741,8 +721,6 @@ BW est. (h)                  0.431       0.209
 BW bias (b)                  1.086       0.439
 rho (h/b)                    0.397       0.475
 ```
-
-\pagebreak  
 
 ### Season 1
 
@@ -770,8 +748,6 @@ table(rdt1$dAssign)
 622 870 
 ```
 
-\pagebreak  
-
 #### Season 1 - Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -794,8 +770,6 @@ BW est. (h)                  0.549       0.549
 BW bias (b)                  1.129       1.129
 rho (h/b)                    0.486       0.486
 ```
-
-\pagebreak
 
 #### Season 1 - Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -821,8 +795,6 @@ BW bias (b)                  0.839       0.719
 rho (h/b)                    0.506       0.483
 ```
 
-\pagebreak
-
 #### Season 1 - Robust  RD regression with epanechnikov kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -845,8 +817,6 @@ BW est. (h)                  0.508       0.508
 BW bias (b)                  1.056       1.056
 rho (h/b)                    0.481       0.481
 ```
-
-\pagebreak
 
 #### Season 1 - Robust  RD regression with epanechnikov kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -872,8 +842,6 @@ BW bias (b)                  1.002       0.763
 rho (h/b)                    0.491       0.452
 ```
 
-\pagebreak
-
 #### Season 1 - Robust  RD regression with uniform kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -896,8 +864,6 @@ BW est. (h)                  0.400       0.400
 BW bias (b)                  0.847       0.847
 rho (h/b)                    0.472       0.472
 ```
-
-\pagebreak  
 
 #### Season 1 - Robust  RD regression with uniform kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -922,8 +888,6 @@ BW est. (h)                  0.473       0.303
 BW bias (b)                  1.148       0.734
 rho (h/b)                    0.412       0.413
 ```
-
-\pagebreak  
 
 ### Season 2
 
@@ -951,8 +915,6 @@ table(rdt2$dAssign)
  492 1152 
 ```
 
-\pagebreak  
-
 #### Season 2 - Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -975,8 +937,6 @@ BW est. (h)                  0.421       0.421
 BW bias (b)                  0.877       0.877
 rho (h/b)                    0.480       0.480
 ```
-
-\pagebreak
 
 #### Season 2 - Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -1002,8 +962,6 @@ BW bias (b)                  0.845       1.005
 rho (h/b)                    0.559       0.421
 ```
 
-\pagebreak
-
 #### Season 2 - Robust  RD regression with epanechnikov kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -1026,8 +984,6 @@ BW est. (h)                  0.428       0.428
 BW bias (b)                  0.899       0.899
 rho (h/b)                    0.477       0.477
 ```
-
-\pagebreak
 
 #### Season 2 - Robust  RD regression with epanechnikov kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -1053,8 +1009,6 @@ BW bias (b)                  0.913       1.223
 rho (h/b)                    0.537       0.451
 ```
 
-\pagebreak
-
 #### Season 2 - Robust  RD regression with uniform kernel and one common MSE-optimal bandwidth selector (mserd)
 
 ```r
@@ -1077,8 +1031,6 @@ BW est. (h)                  0.394       0.394
 BW bias (b)                  0.854       0.854
 rho (h/b)                    0.461       0.461
 ```
-
-\pagebreak  
 
 #### Season 2 - Robust  RD regression with uniform kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -1104,8 +1056,6 @@ BW bias (b)                  0.926       0.944
 rho (h/b)                    0.515       0.452
 ```
 
-\pagebreak  
-
 # 5. Examine whether the outcome is discontinuous at other values of the forcing variable 
 
 ### Pre-Implementation
@@ -1127,8 +1077,6 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0.1139, y.label = "Minutes 
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-68-1.png)<!-- -->
 
-\pagebreak  
-
 #### Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
 
@@ -1149,7 +1097,7 @@ BW bias (b)                  0.583       0.583
 rho (h/b)                    0.602       0.602
 ```
 
-\pagebreak  
+  
 
 #### Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -1170,7 +1118,7 @@ BW bias (b)                  0.790       0.535
 rho (h/b)                    0.670       0.615
 ```
 
-\pagebreak  
+  
 
 ### Season 1
 
@@ -1191,7 +1139,7 @@ rdplot(y = rdt1$veloTotMin, x = rdt1$assignment, c = 0.196, y.label = "Minutes o
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-71-1.png)<!-- -->
 
-\pagebreak  
+  
 
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
@@ -1216,7 +1164,7 @@ BW bias (b)                  0.846       0.846
 rho (h/b)                    0.678       0.678
 ```
 
-\pagebreak  
+  
 
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -1242,7 +1190,7 @@ BW bias (b)                  0.890       0.700
 rho (h/b)                    0.655       0.677
 ```
 
-\pagebreak  
+  
 
 ### Season 2
 
@@ -1263,7 +1211,7 @@ rdplot(y = rdt2$veloTotMin, x = rdt2$assignment, c = 0.3841, y.label = "Minutes 
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
 
-\pagebreak  
+  
 
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
@@ -1288,7 +1236,7 @@ BW bias (b)                  0.857       0.857
 rho (h/b)                    0.702       0.702
 ```
 
-\pagebreak  
+  
 
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -1314,7 +1262,7 @@ BW bias (b)                  1.032       0.824
 rho (h/b)                    0.727       0.634
 ```
 
-\pagebreak  
+  
 
 # 6.	Examined whether jumps existing for population density and number of kids in the home.
 
@@ -1329,7 +1277,7 @@ rdplot(y = rdt0$popDens, x = rdt0$assignment, c = 0, y.label = "Population Densi
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-77-1.png)<!-- -->
 
-\pagebreak  
+  
 
 
 ```r
@@ -1355,7 +1303,7 @@ BW bias (b)                  0.396       0.396
 rho (h/b)                    0.481       0.481
 ```
 
-\pagebreak  
+  
 
 
 ```r
@@ -1382,7 +1330,7 @@ BW bias (b)                  0.662       0.302
 rho (h/b)                    0.469       0.373
 ```
 
-\pagebreak  
+  
 
 #### Pre-Implementation - Number of Kids
 
@@ -1393,7 +1341,7 @@ rdplot(y = rdt0$kids, x = rdt0$assignment, c = 0, y.label = "Number of Kids in H
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-80-1.png)<!-- -->
 
-\pagebreak  
+  
 
 
 ```r
@@ -1419,7 +1367,7 @@ BW bias (b)                  0.526       0.526
 rho (h/b)                    1.221       1.221
 ```
 
-\pagebreak  
+  
 
 
 ```r
@@ -1446,7 +1394,7 @@ BW bias (b)                  1.002       0.291
 rho (h/b)                    0.652       0.447
 ```
 
-\pagebreak  
+  
 
 ### Season 1
 
@@ -1459,7 +1407,7 @@ rdplot(y = rdt1$popDens, x = rdt1$assignment, c = 0, y.label = "Population Densi
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-83-1.png)<!-- -->
 
-\pagebreak  
+  
 
 
 ```r
@@ -1485,7 +1433,7 @@ BW bias (b)                  0.676       0.676
 rho (h/b)                    0.458       0.458
 ```
 
-\pagebreak  
+  
 
 
 ```r
@@ -1512,7 +1460,7 @@ BW bias (b)                  1.007       0.580
 rho (h/b)                    0.567       0.405
 ```
 
-\pagebreak  
+  
 
 #### Season 1 - Number of Kids
 
@@ -1523,7 +1471,7 @@ rdplot(y = rdt1$kids, x = rdt1$assignment, c = 0, y.label = "Number of Kids in H
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-86-1.png)<!-- -->
 
-\pagebreak 
+ 
 
 
 ```r
@@ -1549,7 +1497,7 @@ BW bias (b)                  0.568       0.568
 rho (h/b)                    0.455       0.455
 ```
 
-\pagebreak 
+ 
 
 
 ```r
@@ -1576,7 +1524,7 @@ BW bias (b)                  0.491       0.906
 rho (h/b)                    0.468       0.523
 ```
 
-\pagebreak 
+ 
 
 ### Season 2
 
@@ -1589,7 +1537,7 @@ rdplot(y = rdt2$popDens, x = rdt2$assignment, c = 0, y.label = "Population Densi
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-89-1.png)<!-- -->
 
-\pagebreak 
+ 
 
 
 ```r
@@ -1614,8 +1562,6 @@ BW est. (h)                  0.364       0.364
 BW bias (b)                  0.742       0.742
 rho (h/b)                    0.491       0.491
 ```
-
-\pagebreak 
 
 
 ```r
@@ -1642,8 +1588,6 @@ BW bias (b)                  0.651       1.008
 rho (h/b)                    0.548       0.393
 ```
 
-\pagebreak 
-
 #### Season 2 - Number of Kids
 
 ```r
@@ -1653,7 +1597,7 @@ rdplot(y = rdt2$kids, x = rdt2$assignment, c = 0, y.label = "Number of Kids in H
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-92-1.png)<!-- -->
 
-\pagebreak 
+ 
 
 
 ```r
@@ -1679,7 +1623,7 @@ BW bias (b)                  0.731       0.731
 rho (h/b)                    0.453       0.453
 ```
 
-\pagebreak 
+ 
 
 
 ```r
