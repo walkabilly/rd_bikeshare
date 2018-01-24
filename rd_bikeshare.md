@@ -114,7 +114,7 @@ fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + geom_point(ae
     "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
     axis.title = element_text(size = 16), text = element_text(size = 14)) + 
     xlab("Distance") + ylab("Minutes of cycling per week")
-print(fuzzy_plot1)
+plot(fuzzy_plot1)
 ```
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
@@ -167,7 +167,7 @@ fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(ae
     "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
     axis.title = element_text(size = 16), text = element_text(size = 14)) + 
     xlab("Distance") + ylab("Minutes of cycling per week")
-print(fuzzy_plot2)
+plot(fuzzy_plot2)
 ```
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
@@ -221,7 +221,7 @@ fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(ae
     "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
     axis.title = element_text(size = 16), text = element_text(size = 14)) + 
     xlab("Distance") + ylab("Minutes of cycling per week")
-print(fuzzy_plot2)
+plot(fuzzy_plot2)
 ```
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-19-1.png)<!-- -->
