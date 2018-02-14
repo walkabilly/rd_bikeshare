@@ -220,6 +220,8 @@ plot(fuzzy_plot1)
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-21-1.png)<!-- -->
 
 ```r
+ggsave("fuzzy_plot1.jpg", fuzzy_plot1, dpi = 300)
+
 table(rdt0$dAssign, rdt0$bixiNbhd)
 ```
 
@@ -246,6 +248,8 @@ plot(fuzzy_plot2)
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-22-1.png)<!-- -->
 
 ```r
+ggsave("fuzzy_plot2.jpg", fuzzy_plot2, dpi = 300)
+
 table(rdt1$dAssign, rdt1$bixiNbhd)
 ```
 
@@ -271,6 +275,8 @@ plot(fuzzy_plot3)
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-23-1.png)<!-- -->
 
 ```r
+ggsave("fuzzy_plot3.jpg", fuzzy_plot3, dpi = 300)
+
 table(rdt2$dAssign, rdt2$bixiNbhd)
 ```
 
@@ -1224,7 +1230,6 @@ rho (h/b)                    0.727       0.634
 
 # 6.	Examined whether jumps existing for population density and number of kids in the home.
 
-
 ## Figure 4. Assignment by population density variable scatterplot with linear and LOESS regression functions
 
 ### 4A. Pre-implementation
@@ -1244,10 +1249,10 @@ print(rdPopPlot1)
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-73-1.png)<!-- -->
 
 ```r
-ggsave("rdPopPlot1.jpg", rdPlot1, dpi = 300)
+ggsave("rdPopPlot1.jpg", rdPopPlot1, dpi = 300)
 ```
 
-### 3B. Season 1
+### 4B. Season 1
 
 ```r
 rdPopPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = popDens, fill = factor(dAssign))) + 
@@ -1263,10 +1268,10 @@ print(rdPopPlot1t1)
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
 
 ```r
-ggsave("rdPopPlot1t1.jpg", rdPlot1t1, dpi = 300)
+ggsave("rdPopPlot1t1.jpg", rdPopPlot1t1, dpi = 300)
 ```
 
-### 3C. Season 2
+### 4C. Season 2
 
 
 ```r
@@ -1283,7 +1288,7 @@ print(rdPopPlot1t2)
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-75-1.png)<!-- -->
 
 ```r
-ggsave("rdPopPlot1t2.jpg", rdPlot1t2, dpi = 300)
+ggsave("rdPopPlot1t2.jpg", rdPopPlot1t2, dpi = 300)
 ```
 
 ### Pre-Implementation
