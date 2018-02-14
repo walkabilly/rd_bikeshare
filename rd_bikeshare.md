@@ -260,7 +260,7 @@ table(rdt1$dAssign, rdt1$bixiNbhd)
   1 270 601
 ```
 
-### 2B. Season 2
+### 2C. Season 2
 
 ```r
 fuzzy_plot3 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
@@ -1230,6 +1230,68 @@ rho (h/b)                    0.727       0.634
 
 # 6.	Examined whether jumps existing for population density and number of kids in the home.
 
+
+## Figure 4. Assignment by population density variable scatterplot with linear and LOESS regression functions
+
+### 4A. Pre-implementation
+
+
+```r
+rdPopPlot1 <- ggplot(rdt0, aes(x = assignment, y = popDens, fill = factor(dAssign))) + 
+    geom_point(aes(colour = factor(dAssign)), alpha = 1/2) + geom_smooth(aes(fill = factor(dAssign)), 
+    method = "lm", se = FALSE, colour = "black") + geom_smooth(aes(fill = factor(dAssign)), 
+    linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
+    "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
+    panel.background = element_blank(), axis.title = element_text(size = 16), 
+    text = element_text(size = 14)) + xlab("Distance") + ylab("Population Density")
+print(rdPopPlot1)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
+
+```r
+ggsave("rdPopPlot1.jpg", rdPlot1, dpi = 300)
+```
+
+### 3B. Season 1
+
+```r
+rdPopPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = popDens, fill = factor(dAssign))) + 
+    geom_point(aes(colour = factor(dAssign)), alpha = 1/2) + geom_smooth(aes(fill = factor(dAssign)), 
+    method = "lm", se = FALSE, colour = "black") + geom_smooth(aes(fill = factor(dAssign)), 
+    linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
+    "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
+    panel.background = element_blank(), axis.title = element_text(size = 16), 
+    text = element_text(size = 14)) + xlab("Distance") + ylab("Population Density")
+print(rdPopPlot1t1)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-75-1.png)<!-- -->
+
+```r
+ggsave("rdPopPlot1t1.jpg", rdPlot1t1, dpi = 300)
+```
+
+### 3C. Season 2
+
+
+```r
+rdPopPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = popDens, fill = factor(dAssign))) + 
+    geom_point(aes(colour = factor(dAssign)), alpha = 1/2) + geom_smooth(aes(fill = factor(dAssign)), 
+    method = "lm", se = FALSE, colour = "black") + geom_smooth(aes(fill = factor(dAssign)), 
+    linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
+    "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
+    panel.background = element_blank(), axis.title = element_text(size = 16), 
+    text = element_text(size = 14)) + xlab("Distance") + ylab("Population Density")
+print(rdPopPlot1t2)
+```
+
+![](rd_bikeshare_files/figure-html/unnamed-chunk-76-1.png)<!-- -->
+
+```r
+ggsave("rdPopPlot1t2.jpg", rdPlot1t2, dpi = 300)
+```
+
 ### Pre-Implementation
 
 #### Pre-Implementation - Population Density
@@ -1239,9 +1301,7 @@ rdplot(y = rdt0$popDens, x = rdt0$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
-
-  
+![](rd_bikeshare_files/figure-html/unnamed-chunk-77-1.png)<!-- -->
 
 
 ```r
@@ -1266,8 +1326,6 @@ BW est. (h)                  0.190       0.190
 BW bias (b)                  0.396       0.396
 rho (h/b)                    0.481       0.481
 ```
-
-  
 
 
 ```r
@@ -1294,8 +1352,6 @@ BW bias (b)                  0.662       0.302
 rho (h/b)                    0.469       0.373
 ```
 
-  
-
 #### Pre-Implementation - Number of Kids
 
 ```r
@@ -1303,9 +1359,7 @@ rdplot(y = rdt0$kids, x = rdt0$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-77-1.png)<!-- -->
-
-  
+![](rd_bikeshare_files/figure-html/unnamed-chunk-80-1.png)<!-- -->
 
 
 ```r
@@ -1330,8 +1384,6 @@ BW est. (h)                  0.642       0.642
 BW bias (b)                  0.526       0.526
 rho (h/b)                    1.221       1.221
 ```
-
-  
 
 
 ```r
@@ -1358,8 +1410,6 @@ BW bias (b)                  1.002       0.291
 rho (h/b)                    0.652       0.447
 ```
 
-  
-
 ### Season 1
 
 #### Season 1 - Population Density
@@ -1369,9 +1419,7 @@ rdplot(y = rdt1$popDens, x = rdt1$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-80-1.png)<!-- -->
-
-  
+![](rd_bikeshare_files/figure-html/unnamed-chunk-83-1.png)<!-- -->
 
 
 ```r
@@ -1396,8 +1444,6 @@ BW est. (h)                  0.309       0.309
 BW bias (b)                  0.676       0.676
 rho (h/b)                    0.458       0.458
 ```
-
-  
 
 
 ```r
@@ -1424,8 +1470,6 @@ BW bias (b)                  1.007       0.580
 rho (h/b)                    0.567       0.405
 ```
 
-  
-
 #### Season 1 - Number of Kids
 
 ```r
@@ -1433,9 +1477,7 @@ rdplot(y = rdt1$kids, x = rdt1$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-83-1.png)<!-- -->
-
- 
+![](rd_bikeshare_files/figure-html/unnamed-chunk-86-1.png)<!-- -->
 
 
 ```r
@@ -1460,8 +1502,6 @@ BW est. (h)                  0.258       0.258
 BW bias (b)                  0.568       0.568
 rho (h/b)                    0.455       0.455
 ```
-
- 
 
 
 ```r
@@ -1488,20 +1528,17 @@ BW bias (b)                  0.491       0.906
 rho (h/b)                    0.468       0.523
 ```
 
- 
-
 ### Season 2
 
 #### Season 2 - Population Density
+
 
 ```r
 rdplot(y = rdt2$popDens, x = rdt2$assignment, c = 0, y.label = "Population Density", 
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-86-1.png)<!-- -->
-
- 
+![](rd_bikeshare_files/figure-html/unnamed-chunk-89-1.png)<!-- -->
 
 
 ```r
@@ -1559,9 +1596,7 @@ rdplot(y = rdt2$kids, x = rdt2$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-89-1.png)<!-- -->
-
- 
+![](rd_bikeshare_files/figure-html/unnamed-chunk-92-1.png)<!-- -->
 
 
 ```r
@@ -1586,8 +1621,6 @@ BW est. (h)                  0.331       0.331
 BW bias (b)                  0.731       0.731
 rho (h/b)                    0.453       0.453
 ```
-
- 
 
 
 ```r
@@ -1614,7 +1647,6 @@ BW bias (b)                  0.597       0.726
 rho (h/b)                    0.208       0.534
 ```
 
-# The end
 
 
 
