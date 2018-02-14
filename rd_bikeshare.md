@@ -105,6 +105,9 @@ Subset the data so only those with +- 2Km from the cut off are included.
 rdt0 <- subset(rdt0, assignment >= -2)
 ```
 
+## Figure 2. Histogram of assignment variable (Distance from Cut-Point)
+
+### 2A. Pre-Implementation
 
 
 ```r
@@ -132,6 +135,8 @@ ggsave("histogramAssign.pdf", histogramAssign, dpi = 300)
 rdt1 <- subset(rdt1, assignment >= -2)
 ```
 
+### 2B. Season 1 
+
 
 ```r
 histogramAssign1 <- ggplot(rdt1, aes(assignment)) + geom_histogram(aes(y = ..density..), 
@@ -157,6 +162,8 @@ ggsave("histogramAssign1.pdf", histogramAssign1, dpi = 300)
 ```r
 rdt2 <- subset(rdt2, assignment >= -2)
 ```
+
+### 2C. Season 2 
 
 
 ```r
@@ -203,9 +210,9 @@ ggsave("histogramAssign2.pdf", histogramAssign2, dpi = 300)
 
 # 1.	Graphed the relationship between the assignment and treatment variable (Figure 2)
 
-## Figure 2 - Relationship between the assignment (distance) and treatment (living in a bikeshare neighbourhood) variables 
+## Figure 3. Relationship between the assignment (distance) and treatment (living in a bikeshare neighbourhood) variables 
 
-### 2A. Pre-implentation
+### 3A. Pre-implentation
 
 ```r
 fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
@@ -232,8 +239,7 @@ table(rdt0$dAssign, rdt0$bixiNbhd)
   1   2 443
 ```
 
-### 2B. Season 1
-
+### 3B. Season 1
 
 ```r
 fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
@@ -260,7 +266,7 @@ table(rdt1$dAssign, rdt1$bixiNbhd)
   1 270 601
 ```
 
-### 2C. Season 2
+### 3C. Season 2
 
 ```r
 fuzzy_plot3 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin)) + geom_point(aes(colour = factor(bixiNbhd)), 
@@ -287,11 +293,11 @@ table(rdt2$dAssign, rdt2$bixiNbhd)
   1 349 805
 ```
 
-# 2.	Graphed the assignment by outcome variable scatterplot with linear and empirically estimated regression functions (Figure 3)
+# 2.	Graphed the assignment by outcome variable scatterplot with linear and nonparametric regression
 
-## Figure 3. Assignment by outcome variable scatterplot with linear and empirically estimated regression functions
+## Figure 4. Assignment by outcome variable scatterplot with linear and nonparametric regression 
 
-### 3A. Pre-implementation
+### 4A. Pre-implementation
 
 
 ```r
@@ -311,7 +317,7 @@ print(rdPlot1)
 ggsave("rdMain.jpg", rdPlot1, dpi = 300)
 ```
 
-### 3B. Season 1
+### 4B. Season 1
 
 ```r
 rdPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin, fill = factor(dAssign))) + 
@@ -330,7 +336,7 @@ print(rdPlot1t1)
 ggsave("rdMaint1.jpg", rdPlot1t1, dpi = 300)
 ```
 
-### 3C. Season 2
+### 4C. Season 2
 
 
 ```r
@@ -1061,8 +1067,6 @@ BW bias (b)                  0.583       0.583
 rho (h/b)                    0.602       0.602
 ```
 
-  
-
 #### Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
 ```
@@ -1082,8 +1086,6 @@ BW bias (b)                  0.790       0.535
 rho (h/b)                    0.670       0.615
 ```
 
-  
-
 ### Season 1
 
 
@@ -1102,8 +1104,6 @@ rdplot(y = rdt1$veloTotMin, x = rdt1$assignment, c = 0.196, y.label = "Minutes o
 ```
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-67-1.png)<!-- -->
-
-  
 
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
@@ -1127,8 +1127,6 @@ BW est. (h)                  0.573       0.573
 BW bias (b)                  0.846       0.846
 rho (h/b)                    0.678       0.678
 ```
-
-  
 
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -1154,8 +1152,6 @@ BW bias (b)                  0.890       0.700
 rho (h/b)                    0.655       0.677
 ```
 
-  
-
 ### Season 2
 
 
@@ -1174,8 +1170,6 @@ rdplot(y = rdt2$veloTotMin, x = rdt2$assignment, c = 0.3841, y.label = "Minutes 
 ```
 
 ![](rd_bikeshare_files/figure-html/unnamed-chunk-70-1.png)<!-- -->
-
-  
 
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
@@ -1199,8 +1193,6 @@ BW est. (h)                  0.602       0.602
 BW bias (b)                  0.857       0.857
 rho (h/b)                    0.702       0.702
 ```
-
-  
 
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 
@@ -1226,13 +1218,11 @@ BW bias (b)                  1.032       0.824
 rho (h/b)                    0.727       0.634
 ```
 
-  
-
 # 6.	Examined whether jumps existing for population density and number of kids in the home.
 
-## Figure 4. Assignment by population density variable scatterplot with linear and LOESS regression functions
+## Figure 5. Assignment by population density variable scatterplot with linear and LOESS regression functions
 
-### 4A. Pre-implementation
+### 5A. Pre-implementation
 
 
 ```r
@@ -1252,7 +1242,7 @@ print(rdPopPlot1)
 ggsave("rdPopPlot1.jpg", rdPopPlot1, dpi = 300)
 ```
 
-### 4B. Season 1
+### 5B. Season 1
 
 ```r
 rdPopPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = popDens, fill = factor(dAssign))) + 
@@ -1271,7 +1261,7 @@ print(rdPopPlot1t1)
 ggsave("rdPopPlot1t1.jpg", rdPopPlot1t1, dpi = 300)
 ```
 
-### 4C. Season 2
+### 5C. Season 2
 
 
 ```r
