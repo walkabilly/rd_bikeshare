@@ -1,7 +1,6 @@
 ---
 title: 'Regression Discontinuity Analysis of Bikeshare in Montreal'
 author: "Daniel Fuller (dfuller@mun.ca)"
-date: "January, 2017"
 output:
   html_document:
     keep_md: yes
@@ -114,8 +113,7 @@ histogramAssign <- ggplot(rdt0, aes(assignment)) + geom_histogram(aes(y = ..dens
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
     "grey")) + scale_fill_manual(values = c("black", "grey")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance for Bikeshare Station") + 
-    ylab("Density")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Density")
 plot(histogramAssign)
 ```
 
@@ -141,8 +139,7 @@ histogramAssign1 <- ggplot(rdt1, aes(assignment)) + geom_histogram(aes(y = ..den
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
     "grey")) + scale_fill_manual(values = c("black", "grey")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance for Bikeshare Station") + 
-    ylab("Density")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Density")
 plot(histogramAssign1)
 ```
 
@@ -168,8 +165,7 @@ histogramAssign2 <- ggplot(rdt2, aes(assignment)) + geom_histogram(aes(y = ..den
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
     "grey")) + scale_fill_manual(values = c("black", "grey")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance for Bikeshare Station") + 
-    ylab("Density")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Density")
 plot(histogramAssign2)
 ```
 
@@ -217,7 +213,7 @@ fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + geom_point(ae
     scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
     "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
     axis.title = element_text(size = 16), text = element_text(size = 14)) + 
-    xlab("Distance") + ylab("Minutes of cycling per week")
+    xlab("Distance from Cut-Point") + ylab("Minutes of cycling per week")
 plot(fuzzy_plot1)
 ```
 
@@ -243,7 +239,7 @@ fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + geom_point(ae
     scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
     "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
     axis.title = element_text(size = 16), text = element_text(size = 14)) + 
-    xlab("Distance") + ylab("Minutes of cycling per week")
+    xlab("Distance from Cut-Point") + ylab("Minutes of cycling per week")
 plot(fuzzy_plot2)
 ```
 
@@ -268,7 +264,7 @@ fuzzy_plot3 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin)) + geom_point(ae
     scale_colour_manual(values = c("black", "gray90")) + scale_fill_manual(values = c("black", 
     "gray90")) + theme(axis.line = element_line(colour = "black"), panel.background = element_blank(), 
     axis.title = element_text(size = 16), text = element_text(size = 14)) + 
-    xlab("Distance") + ylab("Minutes of cycling per week")
+    xlab("Distance from Cut-Point") + ylab("Minutes of cycling per week")
 plot(fuzzy_plot3)
 ```
 
@@ -299,7 +295,7 @@ rdPlot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin, fill = factor(dAssig
     linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
     "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance") + ylab("Minutes of cycling per week")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Minutes of cycling per week")
 print(rdPlot1)
 ```
 
@@ -318,7 +314,7 @@ rdPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin, fill = factor(dAss
     linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
     "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance") + ylab("Minutes of cycling per week")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Minutes of cycling per week")
 print(rdPlot1t1)
 ```
 
@@ -338,7 +334,7 @@ rdPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin, fill = factor(dAss
     linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
     "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance") + ylab("Minutes of cycling per week")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Minutes of cycling per week")
 print(rdPlot1t2)
 ```
 
@@ -516,8 +512,6 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 # 4. Examined whether the results were sensitive to regression specification and bandwidth selection (Table 2)
 
 ## Table 2: Estimating the Regressions
-
-
 
 ### Pre-Implementation
 
@@ -1039,7 +1033,7 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0.1139, y.label = "Minutes 
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-65-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-64-1.png)<!-- -->
 
 #### Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 
@@ -1101,7 +1095,7 @@ rdplot(y = rdt1$veloTotMin, x = rdt1$assignment, c = 0.196, y.label = "Minutes o
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-68-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-67-1.png)<!-- -->
 
   
 
@@ -1173,7 +1167,7 @@ rdplot(y = rdt2$veloTotMin, x = rdt2$assignment, c = 0.3841, y.label = "Minutes 
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-71-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-70-1.png)<!-- -->
 
   
 
@@ -1243,11 +1237,11 @@ rdPopPlot1 <- ggplot(rdt0, aes(x = assignment, y = popDens, fill = factor(dAssig
     linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
     "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance") + ylab("Population Density")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Population Density")
 print(rdPopPlot1)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-73-1.png)<!-- -->
 
 ```r
 ggsave("rdPopPlot1.jpg", rdPlot1, dpi = 300)
@@ -1262,11 +1256,11 @@ rdPopPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = popDens, fill = factor(dAss
     linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
     "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance") + ylab("Population Density")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Population Density")
 print(rdPopPlot1t1)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-75-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-74-1.png)<!-- -->
 
 ```r
 ggsave("rdPopPlot1t1.jpg", rdPlot1t1, dpi = 300)
@@ -1282,11 +1276,11 @@ rdPopPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = popDens, fill = factor(dAss
     linetype = "solid", colour = "#FFFFFF") + geom_vline(xintercept = 0) + scale_colour_manual(values = c("black", 
     "#333333")) + scale_fill_manual(values = c("black", "#333333")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
-    text = element_text(size = 14)) + xlab("Distance") + ylab("Population Density")
+    text = element_text(size = 14)) + xlab("Distance from Cut-Point") + ylab("Population Density")
 print(rdPopPlot1t2)
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-76-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-75-1.png)<!-- -->
 
 ```r
 ggsave("rdPopPlot1t2.jpg", rdPlot1t2, dpi = 300)
@@ -1301,7 +1295,7 @@ rdplot(y = rdt0$popDens, x = rdt0$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-77-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-76-1.png)<!-- -->
 
 
 ```r
@@ -1359,7 +1353,7 @@ rdplot(y = rdt0$kids, x = rdt0$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-80-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-79-1.png)<!-- -->
 
 
 ```r
@@ -1419,7 +1413,7 @@ rdplot(y = rdt1$popDens, x = rdt1$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-83-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-82-1.png)<!-- -->
 
 
 ```r
@@ -1477,7 +1471,7 @@ rdplot(y = rdt1$kids, x = rdt1$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-86-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-85-1.png)<!-- -->
 
 
 ```r
@@ -1538,7 +1532,7 @@ rdplot(y = rdt2$popDens, x = rdt2$assignment, c = 0, y.label = "Population Densi
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-89-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-88-1.png)<!-- -->
 
 
 ```r
@@ -1596,7 +1590,7 @@ rdplot(y = rdt2$kids, x = rdt2$assignment, c = 0, y.label = "Number of Kids in H
     x.label = "Distance")
 ```
 
-![](rd_bikeshare_files/figure-html/unnamed-chunk-92-1.png)<!-- -->
+![](rd_bikeshare_files/figure-html/unnamed-chunk-91-1.png)<!-- -->
 
 
 ```r

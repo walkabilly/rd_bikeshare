@@ -1,7 +1,6 @@
 ---
 title: 'Regression Discontinuity Analysis of Bikeshare in Montreal'
 author: "Daniel Fuller (dfuller@mun.ca)"
-date: "January, 2017"
 output:
   html_document:
     keep_md: yes
@@ -133,25 +132,6 @@ Subset the data so only those with +- 2Km from the cut off are included.
 rdt0 <- subset(rdt0, assignment>=-2)
 ```
 
-#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
-
-```{r}
-fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + 
-            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
-            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
-            geom_vline(xintercept = 0) + 
-            scale_colour_manual(values = c("black", "gray90")) +  
-            scale_fill_manual(values = c("black", "gray90")) +  
-            theme(axis.line = element_line(colour = "black"),
-                panel.background = element_blank(),
-                axis.title=element_text(size=16),
-                text=element_text(size=14)) + 
-            xlab("Distance") +
-            ylab("Minutes of cycling per week")
-plot(fuzzy_plot1)
-
-table(rdt0$dAssign, rdt0$bixiNbhd)
-```
 
 ```{r}
 histogramAssign <- ggplot(rdt0, aes(assignment)) +
@@ -165,7 +145,7 @@ histogramAssign <- ggplot(rdt0, aes(assignment)) +
         panel.background = element_blank(),
         axis.title=element_text(size=16),
         text=element_text(size=14)) + 
-        xlab("Distance for Bikeshare Station") +
+        xlab("Distance from Cut-Point") +
         ylab("Density")
 plot(histogramAssign)
 
@@ -188,27 +168,6 @@ rdt1$assignMiss <- is.na(rdt1$assignment)
 rdt1 <- subset(rdt1, assignment>=-2)
 ```
 
-#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
-
-```{r}
-fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + 
-            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
-            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
-            geom_vline(xintercept = 0) + 
-            scale_colour_manual(values = c("black", "gray90")) +  
-            scale_fill_manual(values = c("black", "gray90")) +  
-            theme(axis.line = element_line(colour = "black"),
-                panel.background = element_blank(),
-                axis.title=element_text(size=16),
-                text=element_text(size=14)) + 
-            xlab("Distance") +
-            ylab("Minutes of cycling per week")
-plot(fuzzy_plot2)
-
-table(rdt1$dAssign, rdt1$bixiNbhd)
-```
-
-
 ```{r}
 histogramAssign1 <- ggplot(rdt1, aes(assignment)) +
   geom_histogram(aes(y = ..density..), binwidth = 0.05, colour="black", fill="white") + 
@@ -221,7 +180,7 @@ histogramAssign1 <- ggplot(rdt1, aes(assignment)) +
         panel.background = element_blank(),
         axis.title=element_text(size=16),
         text=element_text(size=14)) + 
-        xlab("Distance for Bikeshare Station") +
+        xlab("Distance from Cut-Point") +
         ylab("Density")
 plot(histogramAssign1)
 
@@ -243,26 +202,6 @@ rdt2$assignMiss <- is.na(rdt2$assignment)
 rdt2 <- subset(rdt2, assignment>=-2)
 ```
 
-#### Plot and table for residing in bikeshare neighbourhood versus inside bikeshare zone
-
-```{r}
-fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + 
-            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
-            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
-            geom_vline(xintercept = 0) + 
-            scale_colour_manual(values = c("black", "gray90")) +  
-            scale_fill_manual(values = c("black", "gray90")) +  
-            theme(axis.line = element_line(colour = "black"),
-                panel.background = element_blank(),
-                axis.title=element_text(size=16),
-                text=element_text(size=14)) + 
-            xlab("Distance") +
-            ylab("Minutes of cycling per week")
-plot(fuzzy_plot2)
-
-table(rdt1$dAssign, rdt1$bixiNbhd)
-```
-
 ```{r}
 histogramAssign2 <- ggplot(rdt2, aes(assignment)) +
   geom_histogram(aes(y = ..density..), binwidth = 0.05, colour="black", fill="white") + 
@@ -275,7 +214,7 @@ histogramAssign2 <- ggplot(rdt2, aes(assignment)) +
         panel.background = element_blank(),
         axis.title=element_text(size=16),
         text=element_text(size=14)) + 
-        xlab("Distance for Bikeshare Station") +
+        xlab("Distance from Cut-Point") +
         ylab("Density")
 plot(histogramAssign2)
 
@@ -313,21 +252,61 @@ print(head(veloDesct1))
 ## Figure 2 - Relationship between the assignment (distance) and treatment (living in a bikeshare neighbourhood) variables 
 
 ### 2A. Pre-implentation
+```{r}
+fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "gray90")) +  
+            scale_fill_manual(values = c("black", "gray90")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance from Cut-Point") +
+            ylab("Minutes of cycling per week")
+plot(fuzzy_plot1)
 
-```{r, echo=TRUE, warning=FALSE}
-table(rdt0$treatment, rdt0$dAssign)
+table(rdt0$dAssign, rdt0$bixiNbhd)
 ```
 
 ### 2B. Season 1
 
-```{r, echo=FALSE, warning=FALSE}
-table(rdt1$treatment, rdt1$dAssign)
+```{r}
+fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "gray90")) +  
+            scale_fill_manual(values = c("black", "gray90")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance from Cut-Point") +
+            ylab("Minutes of cycling per week")
+plot(fuzzy_plot2)
+
+table(rdt1$dAssign, rdt1$bixiNbhd)
 ```
 
 ### 2C. Season 2
+```{r}
+fuzzy_plot3 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin)) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "gray90")) +  
+            scale_fill_manual(values = c("black", "gray90")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance from Cut-Point") +
+            ylab("Minutes of cycling per week")
+plot(fuzzy_plot3)
 
-```{r, echo=FALSE, warning=FALSE}
-table(rdt2$treatment, rdt2$dAssign)
+table(rdt2$dAssign, rdt2$bixiNbhd)
 ```
 
 # 2.	Graphed the assignment by outcome variable scatterplot with linear and empirically estimated regression functions (Figure 3)
@@ -348,7 +327,7 @@ rdPlot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin, fill=factor(dAssign)
                 panel.background = element_blank(),
                 axis.title=element_text(size=16),
                 text=element_text(size=14)) + 
-            xlab("Distance") +
+            xlab("Distance from Cut-Point") +
             ylab("Minutes of cycling per week")
 print(rdPlot1)
 
@@ -368,7 +347,7 @@ rdPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin, fill=factor(dAssig
                 panel.background = element_blank(),
                 axis.title=element_text(size=16),
                 text=element_text(size=14)) + 
-            xlab("Distance") +
+            xlab("Distance from Cut-Point") +
             ylab("Minutes of cycling per week")
 print(rdPlot1t1)
 
@@ -389,7 +368,7 @@ rdPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin, fill=factor(dAssig
                 panel.background = element_blank(),
                 axis.title=element_text(size=16),
                 text=element_text(size=14)) + 
-            xlab("Distance") +
+            xlab("Distance from Cut-Point") +
             ylab("Minutes of cycling per week")
 print(rdPlot1t2)
 
@@ -637,12 +616,6 @@ cbind(t_SRHt2, prop.table(t_SRHt2, 1))
 
 ## Table 2: Estimating the Regressions
 
-```{r, echo=FALSE, warning=FALSE}
-url_robust <- "https://raw.githubusercontent.com/IsidoreBeautrelet/economictheoryblog/master/robust_summary.R"
-eval(parse(text = getURL(url_robust, ssl.verifypeer = FALSE)),
-     envir=.GlobalEnv)
-```
-
 ### Pre-Implementation
 
 #### Pre-Implementation - Linear regression with robust standard errors
@@ -841,6 +814,71 @@ rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0.3841, bwselect="msetwo", kernel= 
 
 # 6.	Examined whether jumps existing for population density and number of kids in the home.
 
+
+## Figure 4. Assignment by population density variable scatterplot with linear and LOESS regression functions
+
+### 4A. Pre-implementation
+
+```{r}
+rdPopPlot1 <- ggplot(rdt0, aes(x = assignment, y = popDens, fill=factor(dAssign))) + 
+            geom_point(aes(colour=factor(dAssign)), alpha = 1/2) + 
+            geom_smooth(aes(fill=factor(dAssign)), method = "lm", se=FALSE, colour="black") + 
+            geom_smooth(aes(fill=factor(dAssign)), linetype="solid", colour="#FFFFFF") + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "#333333")) +  
+            scale_fill_manual(values = c("black", "#333333")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance from Cut-Point") +
+            ylab("Population Density")
+print(rdPopPlot1)
+
+ggsave("rdPopPlot1.jpg", rdPlot1, dpi = 300)
+```
+
+### 3B. Season 1
+```{r}
+rdPopPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = popDens, fill=factor(dAssign))) + 
+            geom_point(aes(colour=factor(dAssign)), alpha = 1/2) + 
+            geom_smooth(aes(fill=factor(dAssign)), method = "lm", se=FALSE, colour="black") + 
+            geom_smooth(aes(fill=factor(dAssign)), linetype="solid", colour="#FFFFFF") + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "#333333")) +  
+            scale_fill_manual(values = c("black", "#333333")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance from Cut-Point") +
+            ylab("Population Density")
+print(rdPopPlot1t1)
+
+ggsave("rdPopPlot1t1.jpg", rdPlot1t1, dpi = 300)
+```
+
+### 3C. Season 2
+
+```{r}
+rdPopPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = popDens, fill=factor(dAssign))) + 
+            geom_point(aes(colour=factor(dAssign)), alpha = 1/2) + 
+            geom_smooth(aes(fill=factor(dAssign)), method = "lm", se=FALSE, colour="black") + 
+            geom_smooth(aes(fill=factor(dAssign)), linetype="solid", colour="#FFFFFF") + 
+            geom_vline(xintercept = 0) + 
+            scale_colour_manual(values = c("black", "#333333")) +  
+            scale_fill_manual(values = c("black", "#333333")) +  
+            theme(axis.line = element_line(colour = "black"),
+                panel.background = element_blank(),
+                axis.title=element_text(size=16),
+                text=element_text(size=14)) + 
+            xlab("Distance from Cut-Point") +
+            ylab("Population Density")
+print(rdPopPlot1t2)
+
+ggsave("rdPopPlot1t2.jpg", rdPlot1t2, dpi = 300)
+```
+
 ### Pre-Implementation
 
 #### Pre-Implementation - Population Density
@@ -848,42 +886,30 @@ rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0.3841, bwselect="msetwo", kernel= 
 rdplot(y = rdt0$popDens, x = rdt0$assignment, c=0, y.label = "Population Density", x.label = "Distance")
 ```
 
-  
-
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 rdrobust(rdt0$popDens, rdt0$assignment, c=0, kernel= "tri", all=TRUE)
 ```
-
-  
 
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 rdrobust(rdt0$popDens, rdt0$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
 ```
 
-  
-
 #### Pre-Implementation - Number of Kids
 ```{r, echo=TRUE, warning=FALSE}
 rdplot(y = rdt0$kids, x = rdt0$assignment, c=0, y.label = "Number of Kids in Home", x.label = "Distance")
 ```
-
-  
 
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 rdrobust(rdt0$kids, rdt0$assignment, c=0, kernel= "tri", all=TRUE)
 ```
 
-  
-
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 rdrobust(rdt0$kids, rdt0$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
 ```
-
-  
 
 ### Season 1
 
@@ -892,51 +918,38 @@ rdrobust(rdt0$kids, rdt0$assignment, c=0, bwselect="msetwo", kernel= "tri", all=
 rdplot(y = rdt1$popDens, x = rdt1$assignment, c=0, y.label = "Population Density", x.label = "Distance")
 ```
 
-  
-
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 rdrobust(rdt1$popDens, rdt1$assignment, c=0, kernel= "tri", all=TRUE)
 ```
-
-  
 
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 rdrobust(rdt1$popDens, rdt1$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
 ```
 
-  
-
 #### Season 1 - Number of Kids
 ```{r, echo=TRUE, warning=FALSE}
 rdplot(y = rdt1$kids, x = rdt1$assignment, c=0, y.label = "Number of Kids in Home", x.label = "Distance")
 ```
-
- 
 
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 rdrobust(rdt1$kids, rdt1$assignment, c=0, kernel= "tri", all=TRUE)
 ```
 
- 
-
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 rdrobust(rdt1$kids, rdt1$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
 ```
 
- 
-
 ### Season 2
 
 #### Season 2 - Population Density
+
 ```{r, echo=TRUE, warning=FALSE}
 rdplot(y = rdt2$popDens, x = rdt2$assignment, c=0, y.label = "Population Density", x.label = "Distance")
 ```
-
- 
 
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
@@ -953,21 +966,16 @@ rdrobust(rdt2$popDens, rdt2$assignment, c=0, bwselect="msetwo", kernel= "tri", a
 rdplot(y = rdt2$kids, x = rdt2$assignment, c=0, y.label = "Number of Kids in Home", x.label = "Distance")
 ```
 
- 
-
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 rdrobust(rdt2$kids, rdt2$assignment, c=0, kernel= "tri", all=TRUE)
 ```
-
- 
 
 ```{r, echo=TRUE, warning=FALSE}
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 rdrobust(rdt2$kids, rdt2$assignment, c=0, bwselect="msetwo", kernel= "tri", all=TRUE)
 ```
 
-# The end
 
 
 
