@@ -112,7 +112,7 @@ rdt0 <- subset(rdt0, assignment >= -2)
 
 ```r
 histogramAssign <- ggplot(rdt0, aes(assignment)) + geom_histogram(aes(y = ..density..), 
-    binwidth = 0.05, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
+    binwidth = 0.1, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
     "grey")) + scale_fill_manual(values = c("black", "grey")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
@@ -140,7 +140,7 @@ rdt1 <- subset(rdt1, assignment >= -2)
 
 ```r
 histogramAssign1 <- ggplot(rdt1, aes(assignment)) + geom_histogram(aes(y = ..density..), 
-    binwidth = 0.05, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
+    binwidth = 0.1, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
     "grey")) + scale_fill_manual(values = c("black", "grey")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
@@ -168,7 +168,7 @@ rdt2 <- subset(rdt2, assignment >= -2)
 
 ```r
 histogramAssign2 <- ggplot(rdt2, aes(assignment)) + geom_histogram(aes(y = ..density..), 
-    binwidth = 0.05, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
+    binwidth = 0.1, colour = "black", fill = "white") + geom_density(alpha = 0.6, 
     fill = "grey") + geom_vline(xintercept = 0) + expand_limits(y = 0) + scale_colour_manual(values = c("black", 
     "grey")) + scale_fill_manual(values = c("black", "grey")) + theme(axis.line = element_line(colour = "black"), 
     panel.background = element_blank(), axis.title = element_text(size = 16), 
@@ -414,8 +414,8 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 # A tibble: 2 x 16
   dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens
     <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>
-1    0     46.9   18.9     1.37      1.61  24.3   6.63      51.9
-2    1.00  45.3   17.8     1.54      1.71  23.4   6.33      76.0
+1       0  46.9   18.9     1.37      1.61  24.3   6.63      51.9
+2       1  45.3   17.8     1.54      1.71  23.4   6.33      76.0
   sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin
        <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl>
 1       19.1   2.19    8.39  0.528   0.500         25.8           76.6
@@ -451,8 +451,8 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 # A tibble: 2 x 16
   dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens
     <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>
-1    0     47.0   19.5     1.08      1.50  23.7   9.64      40.8
-2    1.00  43.7   17.4     1.46      1.68  23.7   7.78      72.7
+1       0  47.0   19.5     1.08      1.50  23.7   9.64      40.8
+2       1  43.7   17.4     1.46      1.68  23.7   7.78      72.7
   sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin
        <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl>
 1       17.8   2.88    11.7  0.632   0.483         14.0           57.8
@@ -488,8 +488,8 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0, y.label = "Minutes of cy
 # A tibble: 2 x 16
   dAssign m.age sd.age m.alcool sd.alcool m.bmi sd.bmi m.popDens
     <dbl> <dbl>  <dbl>    <dbl>     <dbl> <dbl>  <dbl>     <dbl>
-1    0     48.2   18.5     1.08      1.36  24.1   7.16      38.2
-2    1.00  45.9   18.8     1.28      1.44  23.7   7.09      65.7
+1       0  48.2   18.5     1.08      1.36  24.1   7.16      38.2
+2       1  45.9   18.8     1.28      1.44  23.7   7.09      65.7
   sd.popDens m.kids sd.kids m.sexF sd.sexF m.veloTotMin sd.pveloTotMin
        <dbl>  <dbl>   <dbl>  <dbl>   <dbl>        <dbl>          <dbl>
 1       19.1   1.83    6.23  0.598   0.491         9.81           47.2
@@ -760,8 +760,8 @@ Number of Obs.                 622         870
 Eff. Number of Obs.            262         284
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
-BW est. (h)                  0.425       0.347
-BW bias (b)                  0.839       0.719
+BW est. (h)                  0.424       0.347
+BW bias (b)                  0.838       0.718
 rho (h/b)                    0.506       0.483
 ```
 
@@ -784,7 +784,7 @@ Eff. Number of Obs.            307         439
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.508       0.508
-BW bias (b)                  1.056       1.056
+BW bias (b)                  1.057       1.057
 rho (h/b)                    0.481       0.481
 ```
 
@@ -807,8 +807,8 @@ Number of Obs.                 622         870
 Eff. Number of Obs.            303         281
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
-BW est. (h)                  0.492       0.345
-BW bias (b)                  1.002       0.763
+BW est. (h)                  0.492       0.346
+BW bias (b)                  1.003       0.764
 rho (h/b)                    0.491       0.452
 ```
 
@@ -831,8 +831,8 @@ Eff. Number of Obs.            245         335
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.400       0.400
-BW bias (b)                  0.847       0.847
-rho (h/b)                    0.472       0.472
+BW bias (b)                  0.844       0.844
+rho (h/b)                    0.473       0.473
 ```
 
 #### Season 1 - Robust  RD regression with uniform kernel and two different MSE-optimal bandwidth selectors (msetwo)
@@ -851,12 +851,12 @@ Kernel                      Uniform
 VCE method                       NN
 
 Number of Obs.                 622         870
-Eff. Number of Obs.            295         245
+Eff. Number of Obs.            294         245
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
-BW est. (h)                  0.473       0.303
-BW bias (b)                  1.148       0.734
-rho (h/b)                    0.412       0.413
+BW est. (h)                  0.471       0.303
+BW bias (b)                  1.142       0.742
+rho (h/b)                    0.413       0.408
 ```
 
 ### Season 2
@@ -928,7 +928,7 @@ Eff. Number of Obs.            192         363
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.472       0.424
-BW bias (b)                  0.845       1.005
+BW bias (b)                  0.845       1.006
 rho (h/b)                    0.559       0.421
 ```
 
@@ -975,7 +975,7 @@ Eff. Number of Obs.            195         469
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.491       0.552
-BW bias (b)                  0.913       1.223
+BW bias (b)                  0.914       1.223
 rho (h/b)                    0.537       0.451
 ```
 
@@ -994,12 +994,12 @@ Kernel                      Uniform
 VCE method                       NN
 
 Number of Obs.                 492        1152
-Eff. Number of Obs.            160         337
+Eff. Number of Obs.            162         338
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
-BW est. (h)                  0.394       0.394
-BW bias (b)                  0.854       0.854
-rho (h/b)                    0.461       0.461
+BW est. (h)                  0.397       0.397
+BW bias (b)                  0.855       0.855
+rho (h/b)                    0.464       0.464
 ```
 
 #### Season 2 - Robust  RD regression with uniform kernel and two different MSE-optimal bandwidth selectors (msetwo)
@@ -1021,8 +1021,8 @@ Number of Obs.                 492        1152
 Eff. Number of Obs.            193         368
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
-BW est. (h)                  0.477       0.426
-BW bias (b)                  0.926       0.944
+BW est. (h)                  0.477       0.427
+BW bias (b)                  0.927       0.944
 rho (h/b)                    0.515       0.452
 ```
 
@@ -1124,7 +1124,7 @@ Eff. Number of Obs.            361         468
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.573       0.573
-BW bias (b)                  0.846       0.846
+BW bias (b)                  0.845       0.845
 rho (h/b)                    0.678       0.678
 ```
 
@@ -1214,7 +1214,7 @@ Eff. Number of Obs.            476         338
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.751       0.522
-BW bias (b)                  1.032       0.824
+BW bias (b)                  1.033       0.824
 rho (h/b)                    0.727       0.634
 ```
 
@@ -1430,7 +1430,7 @@ Eff. Number of Obs.            207         247
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.309       0.309
-BW bias (b)                  0.676       0.676
+BW bias (b)                  0.675       0.675
 rho (h/b)                    0.458       0.458
 ```
 
@@ -1454,8 +1454,8 @@ Number of Obs.                 622         870
 Eff. Number of Obs.            335         177
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
-BW est. (h)                  0.570       0.235
-BW bias (b)                  1.007       0.580
+BW est. (h)                  0.570       0.234
+BW bias (b)                  1.006       0.580
 rho (h/b)                    0.567       0.405
 ```
 
@@ -1488,8 +1488,8 @@ Eff. Number of Obs.            167         200
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.258       0.258
-BW bias (b)                  0.568       0.568
-rho (h/b)                    0.455       0.455
+BW bias (b)                  0.569       0.569
+rho (h/b)                    0.454       0.454
 ```
 
 
@@ -1632,7 +1632,7 @@ Eff. Number of Obs.             23         333
 Order est. (p)                   1           1
 Order bias  (p)                  2           2
 BW est. (h)                  0.124       0.388
-BW bias (b)                  0.597       0.726
+BW bias (b)                  0.596       0.726
 rho (h/b)                    0.208       0.534
 ```
 

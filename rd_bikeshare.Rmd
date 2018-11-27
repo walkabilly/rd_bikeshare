@@ -40,15 +40,15 @@ names(rdt2) <- c("id", "prePost", "bixArea11", "dist11", "av_time3", "veloTotMin
 
 rdt0$bixiNbhd <- car::recode(rdt0$bixiNbhd, 
               "0 ='Yes';
-              1 = 'No'", as.factor.result=TRUE)
+              1 = 'No'", as.factor=TRUE)
 
 rdt1$bixiNbhd <- car::recode(rdt1$bixiNbhd, 
               "0 ='Yes';
-              1 = 'No'", as.factor.result=TRUE)
+              1 = 'No'", as.factor=TRUE)
 
 rdt2$bixiNbhd <- car::recode(rdt2$bixiNbhd, 
               "0 ='Yes';
-              1 = 'No'", as.factor.result=TRUE)
+              1 = 'No'", as.factor=TRUE)
 ```
 
 Variables were calculated using ArcGIS and recoded in R. 
@@ -132,10 +132,13 @@ Subset the data so only those with +- 2Km from the cut off are included.
 rdt0 <- subset(rdt0, assignment>=-2)
 ```
 
+## Figure 2. Histogram of assignment variable (Distance from Cut-Point)
+
+### 2A. Pre-Implementation
 
 ```{r}
 histogramAssign <- ggplot(rdt0, aes(assignment)) +
-  geom_histogram(aes(y = ..density..), binwidth = 0.05, colour="black", fill="white") + 
+  geom_histogram(aes(y = ..density..), binwidth = 0.1, colour="black", fill="white") + 
   geom_density(alpha=.6, fill="grey") + 
   geom_vline(xintercept = 0) + 
   expand_limits(y = 0) + 
@@ -168,9 +171,11 @@ rdt1$assignMiss <- is.na(rdt1$assignment)
 rdt1 <- subset(rdt1, assignment>=-2)
 ```
 
+### 2B. Season 1 
+
 ```{r}
 histogramAssign1 <- ggplot(rdt1, aes(assignment)) +
-  geom_histogram(aes(y = ..density..), binwidth = 0.05, colour="black", fill="white") + 
+  geom_histogram(aes(y = ..density..), binwidth = 0.1, colour="black", fill="white") + 
   geom_density(alpha=.6, fill="grey") + 
   geom_vline(xintercept = 0) + 
   expand_limits(y = 0) + 
@@ -202,9 +207,11 @@ rdt2$assignMiss <- is.na(rdt2$assignment)
 rdt2 <- subset(rdt2, assignment>=-2)
 ```
 
+### 2C. Season 2 
+
 ```{r}
 histogramAssign2 <- ggplot(rdt2, aes(assignment)) +
-  geom_histogram(aes(y = ..density..), binwidth = 0.05, colour="black", fill="white") + 
+  geom_histogram(aes(y = ..density..), binwidth = 0.1, colour="black", fill="white") + 
   geom_density(alpha=.6, fill="grey") + 
   geom_vline(xintercept = 0) + 
   expand_limits(y = 0) + 
@@ -249,9 +256,9 @@ print(head(veloDesct1))
 
 # 1.	Graphed the relationship between the assignment and treatment variable (Figure 2)
 
-## Figure 2 - Relationship between the assignment (distance) and treatment (living in a bikeshare neighbourhood) variables 
+## Figure 3. Relationship between the assignment (distance) and treatment (living in a bikeshare neighbourhood) variables 
 
-### 2A. Pre-implentation
+### 3A. Pre-implentation
 ```{r}
 fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) + 
             geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
@@ -267,11 +274,12 @@ fuzzy_plot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin)) +
             ylab("Minutes of cycling per week")
 plot(fuzzy_plot1)
 
+ggsave("fuzzy_plot1.jpg", fuzzy_plot1, dpi = 300)
+
 table(rdt0$dAssign, rdt0$bixiNbhd)
 ```
 
-### 2B. Season 1
-
+### 3B. Season 1
 ```{r}
 fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) + 
             geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
@@ -287,10 +295,12 @@ fuzzy_plot2 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin)) +
             ylab("Minutes of cycling per week")
 plot(fuzzy_plot2)
 
+ggsave("fuzzy_plot2.jpg", fuzzy_plot2, dpi = 300)
+
 table(rdt1$dAssign, rdt1$bixiNbhd)
 ```
 
-### 2C. Season 2
+### 3C. Season 2
 ```{r}
 fuzzy_plot3 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin)) + 
             geom_point(aes(colour=factor(bixiNbhd)), shape = 1) + 
@@ -306,14 +316,16 @@ fuzzy_plot3 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin)) +
             ylab("Minutes of cycling per week")
 plot(fuzzy_plot3)
 
+ggsave("fuzzy_plot3.jpg", fuzzy_plot3, dpi = 300)
+
 table(rdt2$dAssign, rdt2$bixiNbhd)
 ```
 
-# 2.	Graphed the assignment by outcome variable scatterplot with linear and empirically estimated regression functions (Figure 3)
+# 2.	Graphed the assignment by outcome variable scatterplot with linear and nonparametric regression
 
-## Figure 3. Assignment by outcome variable scatterplot with linear and empirically estimated regression functions
+## Figure 4. Assignment by outcome variable scatterplot with linear and nonparametric regression 
 
-### 3A. Pre-implementation
+### 4A. Pre-implementation
 
 ```{r}
 rdPlot1 <- ggplot(rdt0, aes(x = assignment, y = veloTotMin, fill=factor(dAssign))) + 
@@ -334,7 +346,7 @@ print(rdPlot1)
 ggsave("rdMain.jpg", rdPlot1, dpi = 300)
 ```
 
-### 3B. Season 1
+### 4B. Season 1
 ```{r}
 rdPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = veloTotMin, fill=factor(dAssign))) + 
             geom_point(aes(colour=factor(dAssign)), alpha = 1/2) + 
@@ -354,7 +366,7 @@ print(rdPlot1t1)
 ggsave("rdMaint1.jpg", rdPlot1t1, dpi = 300)
 ```
 
-### 3C. Season 2
+### 4C. Season 2
 
 ```{r}
 rdPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = veloTotMin, fill=factor(dAssign))) + 
@@ -505,7 +517,7 @@ rdt0$rincome <- car::recode(rdt0$income,
               3:4='2 - 20-49k';
               5:6='3 - 50-99k';
               7:9='4 - 100k+';
-              99=NA", as.factor.result=TRUE)
+              99=NA", as.factor=TRUE)
 t_inct0 <- table(rdt0$dAssign, rdt0$rincome)
 cbind(t_inct0, prop.table(t_inct0, 1))
 ```
@@ -515,7 +527,7 @@ cbind(t_inct0, prop.table(t_inct0, 1))
 rdt0$rSRHealth <- car::recode(rdt0$srHealth, 
               "1:2='Excellent';
               3:5='Bad/Good';
-              9=NA", as.factor.result=TRUE)
+              9=NA", as.factor=TRUE)
 t_SHRt0 <- table(rdt0$dAssign, rdt0$rSRHealth)
 cbind(t_SHRt0, prop.table(t_SHRt0, 1))
 ```
@@ -550,7 +562,7 @@ rdt1$rincome <- car::recode(rdt1$income,
               3:4='2 - 20-49k';
               5:6='3 - 50-99k';
               7:9='4 - 100k+';
-              99=NA", as.factor.result=TRUE)
+              99=NA", as.factor=TRUE)
 t_inct1 <- table(rdt1$dAssign, rdt1$rincome)
 cbind(t_inct1, prop.table(t_inct1, 1))
 ```
@@ -560,7 +572,7 @@ cbind(t_inct1, prop.table(t_inct1, 1))
 rdt1$rSRHealth <- car::recode(rdt1$srHealth, 
               "1:2='Excellent';
               3:5='Bad/Good';
-              9=NA", as.factor.result=TRUE)
+              9=NA", as.factor=TRUE)
 t_SRHt1 <- table(rdt1$dAssign, rdt1$rSRHealth)
 cbind(t_SRHt1, prop.table(t_SRHt1, 1))
 ```
@@ -596,7 +608,7 @@ rdt2$rincome <- car::recode(rdt2$income,
               3:4='2 - 20-49k';
               5:6='3 - 50-99k';
               7:9='4 - 100k+';
-              99=NA", as.factor.result=TRUE)
+              99=NA", as.factor=TRUE)
 t_inct2 <- table(rdt2$dAssign, rdt2$rincome)
 cbind(t_inct2, prop.table(t_inct2, 1))
 ```
@@ -607,7 +619,7 @@ cbind(t_inct2, prop.table(t_inct2, 1))
 rdt2$rSRHealth <- car::recode(rdt2$srHealth, 
               "1:2='Excellent';
               3:5='Bad/Good';
-              9=NA", as.factor.result=TRUE)
+              9=NA", as.factor=TRUE)
 t_SRHt2 <- table(rdt2$dAssign, rdt2$rSRHealth)
 cbind(t_SRHt2, prop.table(t_SRHt2, 1))
 ```
@@ -753,14 +765,10 @@ rdplot(y = rdt0$veloTotMin, x = rdt0$assignment, c = 0.1139, y.label = "Minutes 
 rdrobust(rdt0$veloTotMin, rdt0$assignment, c = 0.1139, kernel = "tri", all = TRUE)
 ```
 
-  
-
 #### Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 ```{r, echo=FALSE, warning=FALSE}
 rdrobust(rdt0$veloTotMin, rdt0$assignment, c = 0.1139, bwselect ="msetwo", kernel = "tri", all=TRUE)
 ```
-
-  
 
 ### Season 1
 
@@ -771,21 +779,15 @@ median(rdt1$assignment)
 rdplot(y = rdt1$veloTotMin, x = rdt1$assignment, c=0.196, y.label = "Minutes of cycling per week", x.label = "Distance")
 ```
 
-  
-
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 ```{r, echo=TRUE, warning=FALSE}
 rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0.196, kernel= "tri", all=TRUE)
 ```
 
-  
-
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 ```{r, echo=TRUE, warning=FALSE}
 rdrobust(rdt1$veloTotMin, rdt1$assignment, c=0.196, bwselect="msetwo", kernel= "tri", all=TRUE)
 ```
-
-  
 
 ### Season 2
 
@@ -796,28 +798,21 @@ median(rdt2$assignment)
 rdplot(y = rdt2$veloTotMin, x = rdt2$assignment, c=0.3841, y.label = "Minutes of cycling per week", x.label = "Distance")
 ```
 
-  
-
 ## Robust  RD regression with triangular kernel and one common MSE-optimal bandwidth selector (mserd)
 ```{r, echo=TRUE, warning=FALSE}
 rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0.3841, kernel= "tri", all=TRUE)
 ```
-
-  
 
 ## Robust  RD regression with triangular kernel and two different MSE-optimal bandwidth selectors (msetwo)
 ```{r, echo=TRUE, warning=FALSE}
 rdrobust(rdt2$veloTotMin, rdt2$assignment, c=0.3841, bwselect="msetwo", kernel= "tri", all=TRUE)
 ```
 
-  
-
 # 6.	Examined whether jumps existing for population density and number of kids in the home.
 
+## Figure 5. Assignment by population density variable scatterplot with linear and LOESS regression functions
 
-## Figure 4. Assignment by population density variable scatterplot with linear and LOESS regression functions
-
-### 4A. Pre-implementation
+### 5A. Pre-implementation
 
 ```{r}
 rdPopPlot1 <- ggplot(rdt0, aes(x = assignment, y = popDens, fill=factor(dAssign))) + 
@@ -835,10 +830,10 @@ rdPopPlot1 <- ggplot(rdt0, aes(x = assignment, y = popDens, fill=factor(dAssign)
             ylab("Population Density")
 print(rdPopPlot1)
 
-ggsave("rdPopPlot1.jpg", rdPlot1, dpi = 300)
+ggsave("rdPopPlot1.jpg", rdPopPlot1, dpi = 300)
 ```
 
-### 3B. Season 1
+### 5B. Season 1
 ```{r}
 rdPopPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = popDens, fill=factor(dAssign))) + 
             geom_point(aes(colour=factor(dAssign)), alpha = 1/2) + 
@@ -855,10 +850,10 @@ rdPopPlot1t1 <- ggplot(rdt1, aes(x = assignment, y = popDens, fill=factor(dAssig
             ylab("Population Density")
 print(rdPopPlot1t1)
 
-ggsave("rdPopPlot1t1.jpg", rdPlot1t1, dpi = 300)
+ggsave("rdPopPlot1t1.jpg", rdPopPlot1t1, dpi = 300)
 ```
 
-### 3C. Season 2
+### 5C. Season 2
 
 ```{r}
 rdPopPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = popDens, fill=factor(dAssign))) + 
@@ -876,7 +871,7 @@ rdPopPlot1t2 <- ggplot(rdt2, aes(x = assignment, y = popDens, fill=factor(dAssig
             ylab("Population Density")
 print(rdPopPlot1t2)
 
-ggsave("rdPopPlot1t2.jpg", rdPlot1t2, dpi = 300)
+ggsave("rdPopPlot1t2.jpg", rdPopPlot1t2, dpi = 300)
 ```
 
 ### Pre-Implementation
